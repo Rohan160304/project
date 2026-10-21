@@ -1,0 +1,692 @@
+import 'dotenv/config';
+import { PrismaClient, PermissionAction, RoleKey, OrganizationType } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import { nextPublicId } from '../src/engines/idGenerator/id.service';
+
+const prisma = new PrismaClient();
+
+// -----------------------------------------------------------------------------
+// 1. Roles + default permission matrix (§3)
+// -----------------------------------------------------------------------------
+
+const ROLE_DEFINITIONS: { key: RoleKey; name: string; description: string }[] = [
+  { key: 'SUPER_ADMIN', name: 'Super Admin', description: 'Platform owner — full cross-tenant access, sole owner of DELETE and paid-event/ads/master-data management.' },
+  { key: 'ORG_ADMIN', name: 'Organization Admin', description: 'Has full access across all enabled modules for their assigned organization.' },
+  { key: 'TEMPLE_ADMIN', name: 'Temple Admin', description: 'Scoped admin for one or more Temples/Derasar.' },
+  { key: 'DHARAMSHALA_ADMIN', name: 'Dharamshala Admin', description: 'Scoped admin for one or more Dharamshalas.' },
+  { key: 'JAIN_CENTER_ADMIN', name: 'Jain Center Admin', description: 'Scoped admin for one or more Jain Centers.' },
+  { key: 'BHOJANSHALA_ADMIN', name: 'Bhojanshala Admin', description: 'Scoped admin for Bhojanshala operations.' },
+  { key: 'PATHSHALA_ADMIN', name: 'Pathshala Admin', description: 'Scoped admin for Pathshala operations.' },
+  { key: 'MONK_ADMIN', name: 'Monk Admin', description: 'Manages shared monk profiles collaboratively.' },
+  { key: 'STAFF', name: 'Staff', description: 'Org staff with module-level permissions assigned by their admin.' },
+  { key: 'SECURITY_GUARD', name: 'Security Guard', description: 'Visitor check-in/out app role — no access to confidential member data.' },
+  { key: 'EVENT_SCANNER', name: 'Event Scanner', description: 'QR ticket scanning only — no edits/reports/payments/member details.' },
+  { key: 'PAGE_OWNER', name: 'Page Owner', description: 'Manages one Community Page assigned by Super Admin.' },
+  { key: 'MEMBER', name: 'Jain Member', description: 'Registered Jain community member.' },
+  { key: 'NON_JAIN_MEMBER', name: 'Non-Jain Member', description: 'Registered non-Jain member with restricted capabilities.' },
+];
+
+const ALL_MODULES = [
+  'MEMBERS', 'FAMILY', 'MONKS', 'TEMPLES', 'DHARAMSHALAS', 'JAIN_CENTERS', 'STAFF', 'VISITORS',
+  'BOOKINGS', 'DONATIONS', 'EVENTS', 'EVENTS_PAID', 'TICKETS', 'SEATING', 'TOURS', 'FEED', 'OFFERS',
+  'ADS', 'NEWS', 'COMMUNITY_PAGES', 'POLLS', 'CALENDAR', 'COUNTERS', 'TRACKING', 'DEVICES', 'ALERTS',
+  'COMMUNICATION', 'ANNOUNCEMENTS', 'GALLERY', 'VOLUNTEERS', 'SUPPORT_TICKETS', 'NOTIFICATIONS',
+  'REPORTS', 'SETTINGS', 'AUDIT_LOGS', 'DASHBOARD', 'MASTER_DATA',
+];
+
+const ALL_ACTIONS: PermissionAction[] = ['VIEW', 'CREATE', 'EDIT', 'APPROVE', 'REJECT', 'DELETE'];
+
+/** Default role -> module -> allowed actions matrix (§3 permission matrix highlights). DELETE is never granted here — enforced separately as Super-Admin-only regardless. */
+function defaultMatrixFor(role: RoleKey): Record<string, PermissionAction[]> {
+  const orgAdminBase: Record<string, PermissionAction[]> = {
+    MEMBERS: ['VIEW', 'CREATE'], // §3: admins can add + view members, never edit/delete
+    FAMILY: ['VIEW'],
+    MONKS: ['VIEW', 'CREATE', 'EDIT'], // shared profiles, collaborative edit
+    STAFF: ['VIEW', 'CREATE', 'EDIT'],
+    VISITORS: ['VIEW', 'CREATE', 'EDIT'],
+    BOOKINGS: ['VIEW', 'CREATE', 'EDIT', 'APPROVE', 'REJECT'],
+    DONATIONS: ['VIEW', 'APPROVE', 'REJECT'],
+    EVENTS: ['VIEW', 'CREATE', 'EDIT'], // free events only; paid gated separately
+    TICKETS: ['VIEW'],
+    SEATING: ['VIEW', 'CREATE', 'EDIT'],
+    TOURS: ['VIEW', 'CREATE', 'EDIT'],
+    FEED: ['VIEW', 'CREATE', 'EDIT'],
+    OFFERS: ['VIEW'],
+    NEWS: ['VIEW', 'CREATE', 'EDIT'], // own org news only
+    POLLS: ['VIEW', 'CREATE'],
+    CALENDAR: ['VIEW'],
+    COUNTERS: ['VIEW'],
+    TRACKING: ['VIEW', 'CREATE', 'EDIT'],
+    DEVICES: ['VIEW', 'CREATE', 'EDIT'],
+    ALERTS: ['VIEW'],
+    COMMUNICATION: ['VIEW', 'CREATE'],
+    ANNOUNCEMENTS: ['VIEW', 'CREATE'],
+    GALLERY: ['VIEW', 'CREATE', 'EDIT'],
+    VOLUNTEERS: ['VIEW', 'CREATE', 'EDIT', 'APPROVE', 'REJECT'],
+    SUPPORT_TICKETS: ['VIEW', 'CREATE'],
+    NOTIFICATIONS: ['VIEW'],
+    REPORTS: ['VIEW'],
+    AUDIT_LOGS: ['VIEW'], // limited to own org, enforced in service layer
+    DASHBOARD: ['VIEW'],
+  };
+
+  switch (role) {
+    case 'SUPER_ADMIN': {
+      const all: Record<string, PermissionAction[]> = {};
+      for (const m of ALL_MODULES) all[m] = [...ALL_ACTIONS];
+      return all;
+    }
+    case 'ORG_ADMIN':
+      return { ...orgAdminBase, TEMPLES: ['VIEW', 'EDIT'], JAIN_CENTERS: ['VIEW', 'EDIT'], DHARAMSHALAS: ['VIEW', 'EDIT'] };
+    case 'TEMPLE_ADMIN':
+    case 'JAIN_CENTER_ADMIN':
+      return { ...orgAdminBase, TEMPLES: ['VIEW', 'EDIT'], JAIN_CENTERS: ['VIEW', 'EDIT'] };
+    case 'DHARAMSHALA_ADMIN':
+      return { ...orgAdminBase, DHARAMSHALAS: ['VIEW', 'EDIT'] };
+    case 'BHOJANSHALA_ADMIN':
+    case 'PATHSHALA_ADMIN':
+      return { ...orgAdminBase };
+    case 'MONK_ADMIN':
+      return { MONKS: ['VIEW', 'CREATE', 'EDIT'], TRACKING: ['VIEW', 'CREATE', 'EDIT'], TOURS: ['VIEW', 'CREATE', 'EDIT'] };
+    case 'STAFF':
+      return {}; // module list is fully driven by StaffModulePermission, not role defaults
+    case 'SECURITY_GUARD':
+      return { VISITORS: ['VIEW', 'CREATE', 'EDIT'] };
+    case 'EVENT_SCANNER':
+      return { TICKETS: ['VIEW', 'EDIT'] }; // scan+check-in only, enforced narrowly in service
+    case 'PAGE_OWNER':
+      return { COMMUNITY_PAGES: ['VIEW', 'EDIT'], FEED: ['VIEW', 'CREATE', 'EDIT'], POLLS: ['VIEW', 'CREATE'], GALLERY: ['VIEW', 'CREATE', 'EDIT'] };
+    case 'MEMBER':
+    case 'NON_JAIN_MEMBER':
+      return {
+        MEMBERS: ['VIEW', 'EDIT'], // own profile only, enforced in service layer
+        BOOKINGS: ['VIEW', 'CREATE'],
+        DONATIONS: ['VIEW', 'CREATE'],
+        EVENTS: ['VIEW'],
+        TICKETS: ['VIEW', 'CREATE'],
+        TOURS: ['VIEW'],
+        FEED: ['VIEW'],
+        OFFERS: ['VIEW'],
+        NEWS: ['VIEW'],
+        POLLS: ['VIEW', 'CREATE'],
+        CALENDAR: ['VIEW'],
+        COUNTERS: ['VIEW', 'CREATE', 'EDIT'],
+        VOLUNTEERS: ['VIEW', 'CREATE'],
+      };
+    default:
+      return {};
+  }
+}
+
+async function seedRolesAndPermissions() {
+  for (const def of ROLE_DEFINITIONS) {
+    const role = await prisma.role.upsert({
+      where: { key: def.key },
+      update: { name: def.name, description: def.description },
+      create: { key: def.key, name: def.name, description: def.description },
+    });
+
+    const matrix = defaultMatrixFor(def.key);
+    for (const [module, actions] of Object.entries(matrix)) {
+      for (const action of actions) {
+        await prisma.rolePermission.upsert({
+          where: { roleId_module_action: { roleId: role.id, module, action } },
+          update: { allowed: true },
+          create: { roleId: role.id, module, action, allowed: true },
+        });
+      }
+    }
+  }
+  console.log(`Seeded ${ROLE_DEFINITIONS.length} roles + permission matrices`);
+}
+
+// -----------------------------------------------------------------------------
+// 2. Master data (§4.8)
+// -----------------------------------------------------------------------------
+
+async function upsertByName<T extends { name: string }>(
+  model: { upsert: (args: any) => Promise<any> },
+  items: string[],
+): Promise<Record<string, string>> {
+  const idsByName: Record<string, string> = {};
+  for (const name of items) {
+    const row = await model.upsert({ where: { name }, update: {}, create: { name } });
+    idsByName[name] = row.id;
+  }
+  return idsByName;
+}
+
+const KNOWN_GACCHAS = [
+  'Tapa Gaccha', 'Kharatara Gaccha', 'Anchal Gaccha', 'Agamik Gaccha', 'Parshwachandra Gaccha',
+  'Sardapurnimiya Gaccha', 'Vimal Gaccha', 'Sagar Gaccha', 'Pipplak Gaccha', 'Nagori Tapa Gaccha',
+  'Lonka Gaccha', 'Upkeshiya Gaccha', 'Chitod Gaccha', 'Bruhad Tapa Gaccha', 'Ancal Gaccha',
+  'Kaduaa Gaccha', 'Purnima Gaccha', 'Sardhapurnimika Gaccha', 'Rudrapalliya Gaccha', 'Vadhamana Gaccha',
+];
+
+/** NOTE (DECISIONS.md D-003): the canonical 83-item Gaccha list wasn't provided in the source
+ * spec, so known Gaccha names are seeded and padded to exactly 83 with clearly-labeled
+ * placeholders. All Gaccha rows are Super-Admin editable master data — nothing here is hardcoded
+ * into application logic; it only affects what this seed run inserts as *starting* data. */
+function buildGacchaList(): string[] {
+  const list = [...KNOWN_GACCHAS];
+  let i = list.length + 1;
+  while (list.length < 83) {
+    list.push(`Gaccha ${i}`);
+    i += 1;
+  }
+  return list;
+}
+
+const TIRTHANKARAS = [
+  "Rishabhdev /or Adinath Bhagwan",
+  "Ajitnath Bhagwan",
+  "Sambhavnath Bhagwan",
+  "Abhinandannath Bhagwan",
+  "Sumatinath Bhagwan",
+  "Padmaprabh Bhagwan",
+  "Suparshawanath Bhagwan",
+  "Chandraprabh Bhagwan",
+  "Pushpdant Bhagwan",
+  "Sheetalnath Bhagwan",
+  "Shriyansnath Bhagwan",
+  "Vaasupujya Bhagwan",
+  "Vimalnath Bhagwan",
+  "Anantnath Bhagwan",
+  "Dharamnath Bhagwan",
+  "Shantinath Bhagwan",
+  "Kunthunath Bhagwan",
+  "Arahnath Bhagwan",
+  "Mallinath Bhagwan",
+  "MuniSuvratnath Bhagwan",
+  "Naminath Bhagwan",
+  "Neminath Bhagwan",
+  "Parshwanath Bhagwan",
+  "Mahavir Swami Bhagwan"
+];
+
+const OTHERS = [
+  "Nakoda Bhairav",
+  "Bhomiyaji Maharaj",
+  "Naigamesha",
+  "Kshetrapal Dada",
+  "Manibhadra Veer",
+  "Ghantakarna Mahavir Bhagwan",
+  "Shri Ajhara Parshvanath",
+  "Shri Mahadeva Parshvanath",
+  "Shri Alokik Parshvanath",
+  "Shri Makshi Parshvanath",
+  "Shri Amijhara Parshvanath",
+  "Shri Mandovara Parshvanath",
+  "Shri Amrutjhara Parshvanath",
+  "Shri Manoranjan Parshvanath",
+  "Shri Ananda Parshvanath",
+  "Shri Manovanchit Parshvanath",
+  "Shri Antariksh Parshvanath",
+  "Shri Muhri Parshvanath",
+  "Shri Ashapuran Parshvanath",
+  "Shri Muleva Parshvanath",
+  "Shri Avanti Parshvanath",
+  "Shri Nageshvar Parshvanath",
+  "Shri Bareja Parshvanath",
+  "Shri Nagphana Parshvanath",
+  "Shri Bhabha Parshvanath",
+  "Shri Navasari Parshvanath",
+  "Shri Bhadreshvar Parshvanath",
+  "Shri Nakoda Parshvanath",
+  "Shri Bhateva Parshvanath",
+  "Shri Navapallav Parshvanath",
+  "Shri Bhayabhanjan Parshvanath",
+  "Shri Navkhanda Parshvanath",
+  "Shri Bhidbhanjan Parshvanath",
+  "Shri Navlakha Parshvanath",
+  "Shri Bhiladiya Parshvanath",
+  "Shri Padmavati Parshvanath",
+  "Shri Bhuvan Parshvanath",
+  "Shri Pallaviya Parshvanath",
+  "Shri Champa Parshvanath",
+  "Shri Panchasara Parshvanath",
+  "Shri Chanda Parshvanath",
+  "Shri Phalvridhi Parshvanath",
+  "Shri Charup Parshvanath",
+  "Shri Posali Parshvanath",
+  "Shri Chintamani Parshvanath",
+  "Shri Posina Parshvanath",
+  "Shri Chorvadi Parshvanath",
+  "Shri Pragatprabhavi Parshvanath",
+  "Shri Dada Parshvanath",
+  "Shri Ranakpura Parshvanath",
+  "Shri Dharnendra Parshvanath",
+  "Shri Ravana Parshvanath",
+  "Shri Dhingadmalla Parshvanath",
+  "Shri Shankhala Parshvanath",
+  "Shri Dhiya Parshvanath",
+  "Shri Stambhan Parshvanath",
+  "Shri Dhrutkallol Parshvanath",
+  "Shri Sahastraphana Parshvanath",
+  "Shri Dokadiya Parshvanath",
+  "Shri Samina Parshvanath",
+  "Shri Dosala Parshvanath",
+  "Shri Sammetshikhar Parshvanath",
+  "Shri Dudhyadhari Parshvanath",
+  "Shri Sankatharan Parshvanath",
+  "Shri Gadaliya Parshvanath",
+  "Shri Saptaphana Parshvanath",
+  "Shri Gambhira Parshvanath",
+  "Shri Savara Parshvanath",
+  "Shri Girua Parshvanath",
+  "Shri Serisha Parshvanath",
+  "Shri Godi Parshvanath",
+  "Shri Sesali Parshvanath",
+  "Shri Hamirpura Parshvanath",
+  "Shri Shamala Parshvanath",
+  "Shri Hrinkar Parshvanath",
+  "Shri Shankeshver Parshvanath",
+  "Shri Jiravala Parshvanath",
+  "Shri Sirodiya Parshvanath",
+  "Shri Jotingada Parshvanath",
+  "Shri Sogatiya Parshvanath",
+  "Shri Jagavallabh Parshvanath",
+  "Shri Somchintamani Parshvanath",
+  "Shri Kesariya Parshvanath",
+  "Shri Sphuling Parshvanath",
+  "Shri Kachulika Parshvanath",
+  "Shri Sukhsagar Parshvanath",
+  "Shri Kalhara Parshvanath",
+  "Shri Sultan Parshvanath",
+  "Shri Kalikund Parshvanath",
+  "Shri Surajmandan Parshvanath",
+  "Shri Kalpadhrum Parshvanath",
+  "Shri Svayambhu Parshvanath",
+  "Shri Kalyan Parshvanath",
+  "Shri Tankala Parshvanath",
+  "Shri Kamitpuran Parshvanath",
+  "Shri Uvasaggaharam Parshvanath",
+  "Shri Kankan Parshvanath",
+  "Shri Vadi Parshvanath",
+  "Shri Kansari Parshvanath",
+  "Shri Vahi Parshvanath",
+  "Shri Kareda Parshvanath",
+  "Shri Vanchara Parshvanath",
+  "Shri Koka Parshvanath",
+  "Shri Varanasi Parshvanath",
+  "Shri Kukadeshvar Parshvanath",
+  "Shri Varkana Parshvanath",
+  "Shri Kunkumarol Parshvanath",
+  "Shri Vighnapahar Parshvanath",
+  "Shri Lodhan Parshvanath",
+  "Shri Vignahara Parshvanath",
+  "Shri Lodrava Parshvanath",
+  "Shri Vijaychintamani Parshvanath",
+  "Shri Manmohan Parshvanath",
+  "Shri Vimal Parshvanath"
+];
+
+async function seedMasterData() {
+  const digambar = await prisma.community.upsert({ where: { name: 'Digambar' }, update: {}, create: { name: 'Digambar' } });
+  const shwetambar = await prisma.community.upsert({ where: { name: 'Shwetambar' }, update: {}, create: { name: 'Shwetambar' } });
+
+  const subCommunitySeeds: { communityId: string; name: string }[] = [
+    { communityId: shwetambar.id, name: 'Murtipujak' },
+    { communityId: shwetambar.id, name: 'Sthanakvasi' },
+    { communityId: shwetambar.id, name: 'Terapanthi (Shwetambar)' },
+    { communityId: digambar.id, name: 'Bispanthi' },
+    { communityId: digambar.id, name: 'Terapanthi (Digambar)' },
+    { communityId: digambar.id, name: 'Taranpanthi' },
+  ];
+  const subCommunityIds: string[] = [];
+  for (const s of subCommunitySeeds) {
+    const row = await prisma.subCommunity.upsert({
+      where: { communityId_name: { communityId: s.communityId, name: s.name } },
+      update: {},
+      create: s,
+    });
+    subCommunityIds.push(row.id);
+  }
+
+  const gacchaNames = buildGacchaList();
+  for (let idx = 0; idx < gacchaNames.length; idx += 1) {
+    const subCommunityId = subCommunityIds[idx % subCommunityIds.length]!;
+    await prisma.gaccha.upsert({
+      where: { subCommunityId_name: { subCommunityId, name: gacchaNames[idx]! } },
+      update: {},
+      create: { subCommunityId, name: gacchaNames[idx]! },
+    });
+  }
+  console.log(`Seeded 2 communities, ${subCommunitySeeds.length} sub-communities, ${gacchaNames.length} gacchas`);
+
+  await upsertByName(prisma.tithiCalendarType as any, ['Gujarati', 'Kutchi', 'Marwari', 'Hindi', 'Marathi', 'Other']);
+
+  for (const name of TIRTHANKARAS) {
+    await prisma.bhagwanMaster.upsert({
+      where: { name },
+      update: { category: "24 Tirthankars" },
+      create: { name, category: "24 Tirthankars" }
+    });
+  }
+
+  for (const name of OTHERS) {
+    await prisma.bhagwanMaster.upsert({
+      where: { name },
+      update: { category: "Others" },
+      create: { name, category: "Others" }
+    });
+  }
+
+  await upsertByName(prisma.bookingCategory as any, [
+    'Dharamshala Room', 'Event Hall', 'Temple Hall/Space', 'Pooja', 'Pooja Materials',
+    'Bhojanshala', 'Pathshala Hall', 'Seminar/Conference/Meeting Room', 'Locker', 'Parking', 'Other',
+  ]);
+
+  await upsertByName(prisma.eventCategory as any, [
+    'Satsang', 'Pravachan', 'Pooja/Ritual', 'Utsav/Festival', 'Yatra', 'Cultural', 'Educational', 'Other',
+  ]);
+
+  await upsertByName(prisma.feedCategory as any, [
+    'Temple Updates', 'Jain Centre Updates', 'Monk Updates', 'Dharamshala Updates',
+    'Events', 'Tours', 'Notices', 'Spiritual Articles', 'Photos', 'Videos',
+    'Offers & Benefits', 'JiNANAM Announcements', 'Other'
+  ]);
+
+  await upsertByName(prisma.offerCategory as any, ['Food', 'Retail', 'Travel', 'Wellness', 'Education', 'Other']);
+
+  await upsertByName(prisma.newsCategory as any, ['Community', 'Temple', 'Platform', 'General']);
+
+  await upsertByName(prisma.communityPageCategory as any, ['Organization', 'Trust', 'Youth Group', 'Mahila Mandal', 'Other']);
+
+  await upsertByName(prisma.sponsorCategory as any, ['Individual', 'Family', 'Trust', 'Corporate']);
+
+  const departments = [
+    'Administration', 'Security', 'Housekeeping', 'Kitchen/Bhojanshala', 'Maintenance', 'Accounts',
+    'IT', 'Front Office/Reception', 'Priest/Pujari', 'Volunteer Coordination', 'Transport',
+    'Gardening', 'Event Management', 'Guest Relations', 'Medical/First Aid', 'Store/Inventory',
+  ];
+  const deptIds = await upsertByName(prisma.staffDepartment as any, departments);
+  for (const [deptName, deptId] of Object.entries(deptIds)) {
+    for (const designation of ['Executive', 'Head']) {
+      await prisma.staffDesignation.upsert({
+        where: { departmentId_name: { departmentId: deptId, name: `${designation} - ${deptName}` } },
+        update: {},
+        create: { departmentId: deptId, name: `${designation} - ${deptName}` },
+      });
+    }
+  }
+
+  await upsertByName(prisma.volunteerArea as any, [
+    'Event Support', 'Bhojanshala Seva', 'Cleanliness', 'Pooja Assistance', 'Transportation',
+    'Medical Camp', 'Registration Desk', 'Teaching (Pathshala)',
+  ]);
+
+  await upsertByName(prisma.donationCategory as any, [
+    'General', 'Gau Seva', 'Jeev Daya', 'Anna Daan', 'Vidya Daan', 'Jinalaya Nirman', 'Sadharmik Bhakti', 'Medical Aid',
+  ]);
+
+  await upsertByName(prisma.relationshipType as any, [
+    'Father', 'Mother', 'Spouse', 'Son', 'Daughter', 'Brother', 'Sister', 'Grandfather', 'Grandmother',
+    'Grandson', 'Granddaughter', 'Father-in-law', 'Mother-in-law', 'Guardian', 'Other',
+  ]);
+
+  await upsertByName(prisma.facilityMaster as any, [
+    'Parking', 'Wheelchair Access', 'Drinking Water', 'Restrooms', 'Bhojanshala', 'Guest House',
+    'Library', 'Medical Room', 'CCTV', 'Wifi', 'AC Hall', 'Sound System',
+  ]);
+
+  const counterTypeIds = await upsertByName(prisma.counterType as any, ['Mantra', 'TAP', 'Jatras', 'Jain Visits']);
+  const subTypeSeeds: [string, string][] = [
+    ['Mantra', 'Navkar Mantra'], ['Mantra', 'Logas'], ['Mantra', 'Uvasaggaharam'],
+    ['Jatras', 'Palitana Jatra'], ['Jatras', 'Girnar Jatra'], ['Jatras', 'Sammed Shikharji Jatra'],
+    ['Jain Visits', 'Temple Visit'],
+  ];
+  for (const [typeName, subName] of subTypeSeeds) {
+    const counterTypeId = counterTypeIds[typeName]!;
+    await prisma.counterSubType.upsert({
+      where: { counterTypeId_name: { counterTypeId, name: subName } },
+      update: {},
+      create: { counterTypeId, name: subName },
+    });
+  }
+
+  await upsertByName(prisma.tourCategory as any, ['99', 'Palitana', 'Girnar', 'Sammed Shikharji', 'Other']);
+
+  await prisma.alertThreshold.upsert({ where: { type: 'OFFLINE_MINUTES' }, update: {}, create: { type: 'OFFLINE_MINUTES', value: 30 } });
+  await prisma.alertThreshold.upsert({ where: { type: 'LOW_BATTERY_PCT' }, update: {}, create: { type: 'LOW_BATTERY_PCT', value: 20 } });
+  await prisma.alertThreshold.upsert({ where: { type: 'ROUTE_DELAY_MINUTES' }, update: {}, create: { type: 'ROUTE_DELAY_MINUTES', value: 30 } });
+
+  await prisma.donationCampaignConfig.upsert({
+    where: { type: 'PLATFORM_ONLINE' },
+    update: {},
+    create: { type: 'PLATFORM_ONLINE', message: 'Support the JiNANAM platform — every contribution helps us serve the Jain community better.', isActive: true },
+  });
+  await prisma.donationCampaignConfig.upsert({
+    where: { type: 'MUSIC_FESTIVAL' },
+    update: {},
+    create: { type: 'MUSIC_FESTIVAL', message: 'Contribute to the Jain Music Festival fund.', isActive: true },
+  });
+
+  console.log('Seeded remaining master data (categories, departments, counters, thresholds, donation campaigns)');
+}
+
+// -----------------------------------------------------------------------------
+// 3. Super Admin
+// -----------------------------------------------------------------------------
+
+async function seedSuperAdmin() {
+  const mobile = '+919999900000';
+  const existing = await prisma.user.findUnique({ where: { mobile } });
+  if (existing) {
+    console.log('Super Admin already exists, skipping');
+    return existing;
+  }
+
+  const passwordHash = await bcrypt.hash('ChangeMe@108', 10);
+  const user = await prisma.user.create({
+    data: {
+      mobile,
+      mobileVerifiedAt: new Date(),
+      passwordHash,
+      firstName: 'Super',
+      lastName: 'Admin',
+      primaryRoleKey: 'SUPER_ADMIN',
+      status: 'ACTIVE',
+      createdByAdmin: true,
+    },
+  });
+  console.log(`Seeded Super Admin user (mobile: ${mobile}, temp password: ChangeMe@108 — rotate immediately)`);
+  return user;
+}
+
+// -----------------------------------------------------------------------------
+// 4. Demo Login Accounts (for testing authentication & authorization)
+// -----------------------------------------------------------------------------
+
+async function seedDemoData() {
+  const shwetambar = await prisma.community.findUniqueOrThrow({ where: { name: 'Shwetambar' } });
+  const superAdmin = await prisma.user.findFirst({ where: { primaryRoleKey: 'SUPER_ADMIN' } });
+
+  // 1. Define Org Types to Seed
+  const orgTypes = [
+    { type: 'TEMPLE' as OrganizationType, name: 'Temple Demo Org', hasPathshala: true, role: 'TEMPLE_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: false },
+    { type: 'DHARAMSHALA' as OrganizationType, name: 'Dharamshala Demo Org', hasPathshala: false, role: 'DHARAMSHALA_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: true },
+    { type: 'JAIN_CENTER' as OrganizationType, name: 'Jain Center Demo Org', hasPathshala: false, role: 'JAIN_CENTER_ADMIN' as RoleKey, hasUpashray: true, hasBhojanshala: false },
+    { type: 'BHOJANSHALA' as OrganizationType, name: 'Bhojanshala Demo Org', hasPathshala: false, role: 'BHOJANSHALA_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: true },
+    { type: 'COMMUNITY_HALL' as OrganizationType, name: 'Community Hall Demo Org', hasPathshala: false, role: 'ORG_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: false },
+    { type: 'TRUST_OFFICE' as OrganizationType, name: 'Trust Office Demo Org', hasPathshala: false, role: 'ORG_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: false },
+    { type: 'STHANAK' as OrganizationType, name: 'Sthanak Demo Org', hasPathshala: false, role: 'ORG_ADMIN' as RoleKey, hasUpashray: false, hasBhojanshala: false },
+  ];
+
+  const createdOrgs: any[] = [];
+
+  // 2. Create Orgs
+  for (const o of orgTypes) {
+    let org = await prisma.organization.findFirst({ where: { name: o.name } });
+    if (!org) {
+      const publicId = await prisma.$transaction((tx) => nextPublicId(o.type, tx));
+      org = await prisma.organization.create({
+        data: {
+          publicId,
+          type: o.type,
+          name: o.name,
+          hasPathshala: o.hasPathshala,
+          hasUpashray: o.hasUpashray,
+          hasBhojanshala: o.hasBhojanshala,
+          status: 'ACTIVE',
+          createdById: superAdmin?.id || undefined,
+        }
+      });
+      console.log(`Seeded Org: ${o.name}`);
+    }
+    createdOrgs.push({ ...o, org });
+  }
+
+  // 3. Create Admins for each Org
+  let mobileCounter = 1;
+  const passwordHash = await bcrypt.hash('ChangeMe@108', 10);
+
+  for (const data of createdOrgs) {
+    const mobileStr = `+9199900000${mobileCounter.toString().padStart(2, '0')}`;
+    mobileCounter++;
+    
+    let user = await prisma.user.findUnique({ where: { mobile: mobileStr } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          mobile: mobileStr,
+          mobileVerifiedAt: new Date(),
+          passwordHash,
+          firstName: data.role.replace('_ADMIN', ''),
+          lastName: 'Demo',
+          primaryRoleKey: data.role,
+          status: 'ACTIVE',
+          createdByAdmin: true,
+        },
+      });
+      console.log(`Seeded Admin → Mobile: ${mobileStr} | Role: ${data.role} | Org: ${data.name}`);
+    }
+
+    // Link user to org
+    await prisma.userOrganization.upsert({
+      where: { userId_organizationId: { userId: user.id, organizationId: data.org.id } },
+      update: { roleKey: data.role },
+      create: { userId: user.id, organizationId: data.org.id, roleKey: data.role, assignedById: superAdmin?.id },
+    });
+  }
+
+  // Add additional roles like STAFF, SECURITY_GUARD, EVENT_SCANNER, PAGE_OWNER, MONK_ADMIN to the Temple Demo Org
+  const templeData = createdOrgs.find(o => o.type === 'TEMPLE');
+  if (templeData) {
+    const additionalRoles: RoleKey[] = ['STAFF', 'SECURITY_GUARD', 'EVENT_SCANNER', 'PAGE_OWNER', 'MONK_ADMIN'];
+    for (const r of additionalRoles) {
+      const mobileStr = `+9199900000${mobileCounter.toString().padStart(2, '0')}`;
+      mobileCounter++;
+      
+      let user = await prisma.user.findUnique({ where: { mobile: mobileStr } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            mobile: mobileStr,
+            mobileVerifiedAt: new Date(),
+            passwordHash,
+            firstName: r.replace('_', ' '),
+            lastName: 'Demo',
+            primaryRoleKey: r,
+            status: 'ACTIVE',
+            createdByAdmin: true,
+          },
+        });
+        console.log(`Seeded additional role → Mobile: ${mobileStr} | Role: ${r}`);
+      }
+      
+      await prisma.userOrganization.upsert({
+        where: { userId_organizationId: { userId: user.id, organizationId: templeData.org.id } },
+        update: { roleKey: r },
+        create: { userId: user.id, organizationId: templeData.org.id, roleKey: r, assignedById: superAdmin?.id },
+      });
+    }
+  }
+
+  // 4. Seed Members (Jain & Non-Jain)
+  for (let i = 1; i <= 3; i += 1) {
+    const mobileStr = `+9199900000${mobileCounter.toString().padStart(2, '0')}`;
+    mobileCounter++;
+    const isJain = i <= 2; // First 2 Jain, 3rd Non-Jain
+    const rKey: RoleKey = isJain ? 'MEMBER' : 'NON_JAIN_MEMBER';
+    
+    let user = await prisma.user.findUnique({ where: { mobile: mobileStr } });
+    if (!user) {
+      const memberPublicId = await prisma.$transaction((tx) => nextPublicId('JAIN_MEMBER', tx));
+      user = await prisma.user.create({
+        data: {
+          mobile: mobileStr,
+          mobileVerifiedAt: new Date(),
+          passwordHash,
+          firstName: isJain ? 'Jain Member' : 'Non-Jain Member',
+          lastName: `Demo ${i}`,
+          primaryRoleKey: rKey,
+          status: 'ACTIVE',
+          publicId: memberPublicId,
+        },
+      });
+      await prisma.member.create({
+        data: {
+          userId: user.id,
+          publicId: memberPublicId,
+          category: isJain ? 'JAIN' : 'NON_JAIN',
+          firstName: isJain ? 'Jain Member' : 'Non-Jain Member',
+          surname: `Demo ${i}`,
+          fullName: `${isJain ? 'Jain' : 'Non-Jain'} Member Demo ${i}`,
+          communityId: isJain ? shwetambar.id : null,
+          mobile: mobileStr,
+          mobileVerifiedAt: new Date(),
+          status: 'ACTIVE',
+        },
+      });
+      console.log(`Seeded Member → Mobile: ${mobileStr} | Role: ${rKey}`);
+    }
+  }
+
+  // Seed Menu for Bhojanshala Demo Org
+  const bhojanshalaData = createdOrgs.find(o => o.type === 'BHOJANSHALA' || o.hasBhojanshala);
+  if (bhojanshalaData) {
+    const menus = [
+      { mealType: 'BREAKFAST', dayOfWeek: 'Monday', itemName: 'Poha, Jalebi, Tea, Milk' },
+      { mealType: 'LUNCH', dayOfWeek: 'Monday', itemName: 'Roti, Dal, Rice, 2 Sabzi, Buttermilk, Sweet' },
+      { mealType: 'DINNER', dayOfWeek: 'Monday', itemName: 'Khichdi, Kadhi, Bhakhri, Sabzi' },
+    ];
+    for (const m of menus) {
+      const existingMenu = await prisma.bhojanshalaMenuItem.findFirst({
+        where: {
+          organizationId: bhojanshalaData.org.id,
+          mealType: m.mealType as any,
+          dayOfWeek: m.dayOfWeek,
+          itemName: m.itemName
+        }
+      });
+      if (!existingMenu) {
+        await prisma.bhojanshalaMenuItem.create({
+          data: {
+            organizationId: bhojanshalaData.org.id,
+            mealType: m.mealType as any,
+            dayOfWeek: m.dayOfWeek,
+            itemName: m.itemName
+          }
+        });
+      }
+    }
+    console.log('Seeded Bhojanshala Menu items.');
+  }
+}
+
+async function main() {
+  await seedRolesAndPermissions();
+  await seedMasterData();
+  await seedSuperAdmin();
+  // await seedDemoData(); // Disabled to allow manual realistic data seeding
+}
+
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

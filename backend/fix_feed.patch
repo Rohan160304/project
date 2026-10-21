@@ -1,0 +1,22 @@
+--- src/modules/events/events.service.ts
++++ src/modules/events/events.service.ts
+@@ -171,7 +171,11 @@
+ 
+   // Automatic feed-card generation (§5.13)
+   const { createAutoFeedCard } = await import('@/modules/feed/feed.service');
++  
++  const visConfig = (event.visibilityConfig as any) || {};
++  if (visConfig?.geo?.country === 'Entire India' && visConfig?.sect === 'All Jain Members') {
++    visConfig.isPublic = true;
++  }
++
+   await createAutoFeedCard({
+     sourceModule: 'EVENTS',
+     sourceId: event.id,
+     organizationId: event.organizationId,
+     title: event.title,
+     description: event.description ?? undefined,
+     coverUrl: event.bannerUrl ?? undefined,
+-    visibilityConfig: (event.visibilityConfig as Record<string, unknown>) ?? undefined,
++    visibilityConfig: visConfig,
+   });

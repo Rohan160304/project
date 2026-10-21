@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(npm -v)",
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(docker info *)",
+      "Read(//Users/admin/Documents/**)",
+      "Read(//Users/admin/**)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s http://localhost:39096/health)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(yarn install *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(DATABASE_URL=\"postgresql://jinanam:Yyx5reUvf3tk6zHKd0lNSvlgvqZHYQzz@dpg-d9p28vijnfac73c00o40-a.oregon-postgres.render.com/jinanam\" ./node_modules/.bin/prisma migrate *)",
+      "Bash(python3 *)",
+      "Bash(duckdb *)",
+      "Bash(curl *)",
+      "Bash(npx prisma *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "postman"
+  ]
+}

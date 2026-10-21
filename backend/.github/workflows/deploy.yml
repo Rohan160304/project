@@ -1,0 +1,138 @@
+name: 🚀 JiNANAM — Deploy to Production
+# Hey
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: 🧪 Run Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: ⚙️ Generate Prisma Client
+        run: npx prisma generate
+
+      - name: 🧪 Run Unit Tests
+        run: npm run test:unit
+        env:
+          NODE_ENV: test
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          REDIS_URL: "redis://localhost:6379"
+          JWT_ACCESS_SECRET: "test_access_secret_at_least_32_chars_long"
+          JWT_REFRESH_SECRET: "test_refresh_secret_at_least_32_chars_long"
+          QR_SIGNING_SECRET: "test_qr_secret"
+          FIELD_ENCRYPTION_KEY: "dGVzdF9lbmNyeXB0aW9uX2tleV8zMl9ieXRlcw=="
+
+  deploy:
+    name: 🚀 Deploy to AWS EC2
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    environment:
+      name: production
+      url: https://api.jinanam.org/health
+
+    steps:
+      - name: 🚀 Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 40m
+          script_stop: true
+          script: |
+            set -e
+
+            cd /home/ec2-user/Jainam_test
+
+            echo "📥 Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "📦 Installing dependencies..."
+            npm ci
+
+            echo "⚙️ Generating Prisma Client..."
+            npx prisma generate
+
+            echo "🌱 Seeding missing demo login accounts..."
+            npx tsx prisma/seed.ts
+
+            echo "🏗️ Building project..."
+            export NODE_OPTIONS="--max-old-space-size=2048"
+            npm run build
+
+            echo "♻️ Reloading PM2..."
+            pm2 reload jinanam-backend --update-env
+
+            echo "💾 Saving PM2..."
+            pm2 save
+
+            echo "📊 PM2 Status"
+            pm2 status
+
+            echo "✅ Deployment Finished"
+
+      - name: ⏳ Wait for Application
+        run: sleep 20
+
+      - name: ❤️ Health Check
+        run: |
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.jinanam.org/health || true)
+
+            echo "Attempt $i : HTTP $STATUS"
+
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Application is healthy."
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "❌ Health check failed."
+          exit 1
+
+      - name: 🎉 Deployment Summary
+        if: success()
+        run: |
+          echo "✅ Deployment Successful"
+          echo "Commit : ${{ github.sha }}"
+          echo "Branch : ${{ github.ref_name }}"
+          echo "Actor  : ${{ github.actor }}"
+          echo "API    : https://api.jinanam.org"
+
+      - name: ❌ Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment Failed"
+          echo "Review GitHub Actions logs."

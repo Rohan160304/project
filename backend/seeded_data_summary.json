@@ -1,0 +1,108 @@
+{
+  "summary": {
+    "total_users": 8,
+    "total_organizations": 6,
+    "default_password_for_all": "ChangeMe@108"
+  },
+  "users": [
+    {
+      "name": "Kalpesh Shah",
+      "mobile": "+919876543210",
+      "role": "MEMBER",
+      "type": "Jain Member"
+    },
+    {
+      "name": "Rahul Sharma",
+      "mobile": "+919000000001",
+      "role": "NON_JAIN_MEMBER",
+      "type": "Non-Jain Member"
+    },
+    {
+      "name": "Mahesh Bhai",
+      "mobile": "+919000011111",
+      "role": "BHOJANSHALA_ADMIN",
+      "type": "Org Admin"
+    },
+    {
+      "name": "Rameshchandra Pujari",
+      "mobile": "+919000022222",
+      "role": "TEMPLE_ADMIN",
+      "type": "Org Admin"
+    },
+    {
+      "name": "Suresh Jain",
+      "mobile": "+919000033333",
+      "role": "DHARAMSHALA_ADMIN",
+      "type": "Org Admin"
+    },
+    {
+      "name": "Nitin Mehta",
+      "mobile": "+919000044444",
+      "role": "JAIN_CENTER_ADMIN",
+      "type": "Org Admin"
+    },
+    {
+      "name": "Hemant Doshi",
+      "mobile": "+919000055555",
+      "role": "ORG_ADMIN",
+      "type": "Org Admin"
+    },
+    {
+      "name": "Jigar Savla",
+      "mobile": "+919000066666",
+      "role": "PAGE_OWNER",
+      "type": "Org Admin"
+    }
+  ],
+  "organizations": [
+    {
+      "name": "Shri Adinath Shwetambar Jain Bhojanshala",
+      "type": "BHOJANSHALA",
+      "admin": "Mahesh Bhai"
+    },
+    {
+      "name": "Shri Shankheshwar Parshwanath Jain Derasar",
+      "type": "TEMPLE",
+      "admin": "Rameshchandra Pujari"
+    },
+    {
+      "name": "Shri Nakoda Tirth Yatri Niwas",
+      "type": "DHARAMSHALA",
+      "admin": "Suresh Jain"
+    },
+    {
+      "name": "Jain Center of America (JCA)",
+      "type": "JAIN_CENTER",
+      "admin": "Nitin Mehta"
+    },
+    {
+      "name": "Shri Sthanakvasi Jain Sangh",
+      "type": "STHANAK",
+      "admin": "Hemant Doshi"
+    },
+    {
+      "name": "Jain Youth Forum (JYF)",
+      "type": "COMMUNITY_PAGE",
+      "admin": "Jigar Savla"
+    }
+  ],
+  "other_data": {
+    "bhojanshala": [
+      "1 Menu Item: Maharaja Jain Thali",
+      "1 Booked Pass for Kalpesh Shah"
+    ],
+    "temple": [
+      "1 Notice: Paryushan Parv Timings",
+      "1 Event: Janma Kalyanak Utsav"
+    ],
+    "dharamshala": [
+      "1 Building: New AC Block",
+      "1 Wing: Wing A",
+      "1 Room: Room 101",
+      "1 Booking for Kalpesh Shah"
+    ],
+    "community_page": [
+      "1 Page Member: Kalpesh Shah"
+    ]
+  }
+}

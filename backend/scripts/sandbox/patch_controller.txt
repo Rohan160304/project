@@ -1,0 +1,23 @@
+export const registerJainMember = asyncHandler(async (req: Request, res: Response) => {
+  const { registrationToken, deviceId, deviceType, os, appVersion } = req.body;
+  if (!registrationToken) throw ApiError.unauthorized('Registration token missing');
+  
+  const decoded = verifyRegistrationToken(registrationToken);
+  const member = await membersService.registerMember({ category: 'JAIN', mobile: decoded.mobile, ...req.body });
+  
+  const tokens = await issueTokensForUser({ id: member.userId, publicId: member.publicId, primaryRoleKey: 'MEMBER' }, { deviceId, deviceType, os, appVersion, ip: req.ip });
+  
+  return created(res, { ...serializeMemberFull(member, null, true), ...tokens });
+});
+
+export const registerNonJainMember = asyncHandler(async (req: Request, res: Response) => {
+  const { registrationToken, deviceId, deviceType, os, appVersion } = req.body;
+  if (!registrationToken) throw ApiError.unauthorized('Registration token missing');
+  
+  const decoded = verifyRegistrationToken(registrationToken);
+  const member = await membersService.registerMember({ category: 'NON_JAIN', mobile: decoded.mobile, ...req.body });
+  
+  const tokens = await issueTokensForUser({ id: member.userId, publicId: member.publicId, primaryRoleKey: 'NON_JAIN_MEMBER' }, { deviceId, deviceType, os, appVersion, ip: req.ip });
+  
+  return created(res, { ...serializeMemberFull(member, null, true), ...tokens });
+});

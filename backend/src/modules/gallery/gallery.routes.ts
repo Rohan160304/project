@@ -1,0 +1,116 @@
+import { Router, Request, Response } from 'express';
+import { z } from 'zod';
+import { requireAuth, requirePermission, scopeToOrganization } from '@/middlewares/auth';
+import { validate } from '@/middlewares/validate';
+import { asyncHandler } from '@/utils/asyncHandler';
+import { ok, created } from '@/utils/apiResponse';
+import { ApiError } from '@/utils/ApiError';
+import { prisma } from '@/config/prisma';
+
+const createAlbumSchema = z.object({
+  body: z.object({
+    organizationId: z.string().min(1),
+    eventId: z.string().optional(),
+    name: z.string().min(1),
+    description: z.string().optional(),
+  }),
+});
+
+const updateAlbumSchema = z.object({
+  body: z.object({
+    name: z.string().min(1).optional(),
+    description: z.string().optional(),
+  }),
+});
+
+const addImagesSchema = z.object({
+  body: z.object({ imageUrls: z.array(z.string().min(1)).min(1) }),
+});
+
+/**
+ * Org-level Gallery (§5.22): event-wise + general albums; admin uploads;
+ * member viewing only — no member downloads (serve view-optimized URLs;
+ * the storage layer returns display URLs, originals are not exposed).
+ */
+export const galleryRoutes = Router();
+
+galleryRoutes.post(
+  '/albums',
+  requireAuth,
+  requirePermission('GALLERY', 'CREATE'),
+  scopeToOrganization,
+  validate(createAlbumSchema),
+  asyncHandler(async (req: Request, res: Response) => {
+    const album = await prisma.galleryAlbum.create({ data: req.body });
+    return created(res, album);
+  }),
+);
+
+galleryRoutes.post(
+  '/albums/:albumId/images',
+  requireAuth,
+  requirePermission('GALLERY', 'CREATE'),
+  validate(addImagesSchema),
+  asyncHandler(async (req: Request, res: Response) => {
+    const albumId = req.params.albumId as string;
+    const existing = await prisma.galleryImage.count({ where: { albumId } });
+    await prisma.galleryImage.createMany({
+      data: (req.body.imageUrls as string[]).map((imageUrl, i) => ({ albumId, imageUrl, order: existing + i })),
+    });
+    const images = await prisma.galleryImage.findMany({ where: { albumId }, orderBy: { order: 'asc' } });
+    return created(res, images);
+  }),
+);
+
+const listOrgAlbums = asyncHandler(async (req: Request, res: Response) => {
+  const albums = await prisma.galleryAlbum.findMany({
+    where: { organizationId: req.params.organizationId as string, deletedAt: null },
+    include: { images: { orderBy: { order: 'asc' } } },
+    orderBy: { createdAt: 'desc' },
+  });
+  return ok(res, albums);
+});
+
+galleryRoutes.get('/org/:organizationId', requireAuth, listOrgAlbums);
+// Alias used by the admin panel
+galleryRoutes.get('/albums/org/:organizationId', requireAuth, listOrgAlbums);
+
+// §63: albums previously had Create + (per-image) Delete but no Edit and no
+// Delete-album at all.
+galleryRoutes.patch(
+  '/albums/:albumId',
+  requireAuth,
+  requirePermission('GALLERY', 'EDIT'),
+  validate(updateAlbumSchema),
+  asyncHandler(async (req: Request, res: Response) => {
+    const album = await prisma.galleryAlbum.findUnique({ where: { id: req.params.albumId as string } });
+    if (!album || album.deletedAt) throw ApiError.notFound('Album not found');
+    const updated = await prisma.galleryAlbum.update({
+      where: { id: req.params.albumId as string },
+      data: { name: req.body.name, description: req.body.description },
+    });
+    return ok(res, updated);
+  }),
+);
+
+galleryRoutes.delete(
+  '/albums/:albumId',
+  requireAuth,
+  requirePermission('GALLERY', 'DELETE'),
+  asyncHandler(async (req: Request, res: Response) => {
+    const album = await prisma.galleryAlbum.findUnique({ where: { id: req.params.albumId as string } });
+    if (!album || album.deletedAt) throw ApiError.notFound('Album not found');
+    await prisma.galleryAlbum.update({ where: { id: req.params.albumId as string }, data: { deletedAt: new Date() } });
+    return ok(res, { deleted: true });
+  }),
+);
+
+galleryRoutes.delete(
+  '/images/:imageId',
+  requireAuth,
+  requirePermission('GALLERY', 'DELETE'),
+  asyncHandler(async (req: Request, res: Response) => {
+    await prisma.galleryImage.delete({ where: { id: req.params.imageId as string } });
+    return ok(res, { deleted: true });
+  }),
+);

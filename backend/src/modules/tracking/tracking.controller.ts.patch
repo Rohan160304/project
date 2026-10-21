@@ -1,0 +1,14 @@
+--- src/modules/tracking/tracking.controller.ts
++++ src/modules/tracking/tracking.controller.ts
+@@ -28,6 +28,11 @@
+   return ok(res, routes);
+ });
+ 
++export const getRoute = asyncHandler(async (req: Request, res: Response) => {
++  const route = await trackingService.getRoute(req.params.routeId as string);
++  return ok(res, route);
++});
++
+ export const listJourneys = asyncHandler(async (req: Request, res: Response) => {
+   const journeys = await trackingService.listJourneys({
+     status: req.query.status as string | undefined,

@@ -1,0 +1,160 @@
+import { z } from 'zod';
+
+const mobileSchema = z.string().regex(/^\+?[1-9]\d{7,14}$/, 'Enter a valid mobile number with country code');
+
+export const requestOtpSchema = z.object({
+  body: z.object({
+    mobile: mobileSchema,
+    purpose: z.enum(['LOGIN', 'REGISTER', 'RESET_PASSWORD']),
+  }),
+});
+
+const deviceInfoSchema = z.object({
+  deviceId: z.string().min(1).optional(),
+  deviceType: z.enum(['ANDROID', 'IOS', 'WEB']).optional().default('WEB'),
+  os: z.string().optional(),
+  appVersion: z.string().optional(),
+});
+
+export const verifyOtpSchema = z.object({
+  body: z.object({
+    mobile: mobileSchema,
+    otp: z.string().length(6),
+    purpose: z.enum(['LOGIN', 'REGISTER', 'RESET_PASSWORD']),
+  }).merge(deviceInfoSchema),
+});
+
+export const loginPasswordSchema = z.object({
+  body: z.object({
+    mobile: mobileSchema,
+    password: z.string().min(6),
+  }).merge(deviceInfoSchema),
+});
+
+export const setPasswordSchema = z.object({
+  body: z.object({
+    password: z.string().min(6),
+  }),
+});
+
+export const changePasswordSchema = z.object({
+  body: z.object({
+    oldPassword: z.string().min(1),
+    newPassword: z.string().min(6),
+  }),
+});
+
+export const forgotPasswordResetSchema = z.object({
+  body: z.object({
+    mobile: mobileSchema,
+    otp: z.string().length(6),
+    newPassword: z.string().min(6),
+  }),
+});
+
+export const loginEmailPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+  }).merge(deviceInfoSchema),
+});
+
+export const requestEmailOtpSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+  }),
+});
+
+export const verifyEmailOtpSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    otp: z.string().length(6),
+  }).merge(deviceInfoSchema),
+});
+
+export const loginGoogleSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    googleId: z.string().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    photoUrl: z.string().optional(),
+  }).merge(deviceInfoSchema),
+});
+
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string().min(10),
+  }),
+});
+
+export const logoutSchema = z.object({
+  body: z.object({
+    deviceId: z.string().min(1),
+  }),
+});
+
+export type RequestOtpInput = z.infer<typeof requestOtpSchema>['body'];
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>['body'];
+export type LoginPasswordInput = z.infer<typeof loginPasswordSchema>['body'];
+
+export const createAdminAccountSchema = z.object({
+  body: z.object({
+    mobile: mobileSchema,
+    password: z.string().min(6).optional(),
+    firstName: z.string().min(1),
+    lastName: z.string().optional(),
+    role: z.enum(['ORG_ADMIN', 'TEMPLE_ADMIN', 'DHARAMSHALA_ADMIN', 'JAIN_CENTER_ADMIN', 'MONK_ADMIN', 'STAFF', 'SUB_ADMIN', 'BHOJANSHALA_ADMIN']),
+    organizationIds: z.array(z.string()),
+    modules: z.array(z.string()).optional(),
+    permissionLevel: z.enum(['READ', 'READ_WRITE']).optional(),
+  }).superRefine((val, ctx) => {
+    if (val.role !== 'MONK_ADMIN' && (!val.organizationIds || val.organizationIds.length === 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['organizationIds'],
+        message: 'At least one organization scope is required for this role',
+      });
+    }
+  }),
+});
+
+export const linkAdminAccountSchema = z.object({
+  body: z.object({
+    userId: z.string().cuid(),
+    password: z.string().min(6).optional(),
+    role: z.enum(['ORG_ADMIN', 'TEMPLE_ADMIN', 'DHARAMSHALA_ADMIN', 'JAIN_CENTER_ADMIN', 'MONK_ADMIN', 'STAFF', 'SUB_ADMIN', 'BHOJANSHALA_ADMIN']),
+    organizationIds: z.array(z.string()),
+    modules: z.array(z.string()).optional(),
+    permissionLevel: z.enum(['READ', 'READ_WRITE']).optional(),
+  }).superRefine((val, ctx) => {
+    if (val.role !== 'MONK_ADMIN' && (!val.organizationIds || val.organizationIds.length === 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['organizationIds'],
+        message: 'At least one organization scope is required for this role',
+      });
+    }
+  }),
+});
+
+export const assignAdminOrgsSchema = z.object({
+  body: z.object({ organizationIds: z.array(z.string()).min(1) }),
+});
+
+export const updateAdminModulesSchema = z.object({
+  body: z.object({ modules: z.array(z.string()) }),
+});
+
+export const setAdminActiveStatusSchema = z.object({
+  body: z.object({ active: z.boolean() }),
+});
+
+export const updateAdminAccountSchema = z.object({
+  body: z.object({
+    firstName: z.string().min(1).optional(),
+    lastName: z.string().optional(),
+    mobile: mobileSchema.optional(),
+    password: z.string().min(6).optional(),
+  }),
+});

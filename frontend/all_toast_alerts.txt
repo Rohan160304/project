@@ -1,0 +1,888 @@
+src/contexts/VisibilityEngineContext.jsx:        toast.info("Unfollowing isn't available for this yet.");
+src/contexts/VisibilityEngineContext.jsx:          toast.error("Couldn't unfollow — please try again.");
+src/contexts/VisibilityEngineContext.jsx:        toast.error("Couldn't follow — please try again.");
+src/contexts/VisibilityEngineContext.jsx:      toast.error("Can't set a tier — this entity's type isn't known.");
+src/contexts/VisibilityEngineContext.jsx:      toast.error("Tiering isn't available for this entity type yet.");
+src/contexts/VisibilityEngineContext.jsx:      toast.error(`You can mark at most ${caps[tier]} ${meta.category}${caps[tier] > 1 ? "s" : ""} as ${tier}.`);
+src/components/member/FamilyMembersCard.jsx:    if (!name.trim()) { toast.error(t("Name is required.")); return; }
+src/components/member/FamilyMembersCard.jsx:    if (!mobile.trim()) { toast.error(t("Mobile number is required.")); return; }
+src/components/member/FamilyMembersCard.jsx:      toast.success(t("Family member added. An invite has been sent to their mobile."));
+src/components/member/FamilyMembersCard.jsx:      toast.error(extractErrorMessage(err));
+src/components/modals/DelegateModuleModal.jsx:      toast.error(t("Please fill all required fields"));
+src/components/modals/DelegateModuleModal.jsx:      toast.success(t("Staff account created successfully for this module"));
+src/components/modals/DelegateModuleModal.jsx:      toast.error(extractErrorMessage(err) || t("Failed to create staff account"));
+src/components/modals/EventHallBookingModal.jsx:      toast.error(t("Please select an event hall"));
+src/components/modals/EventHallBookingModal.jsx:      toast.success(t("Event Hall booked successfully!"));
+src/components/modals/EventHallBookingModal.jsx:      toast.error(error?.response?.data?.error?.message || error?.response?.data?.message || t("Failed to book Event Hall"));
+src/components/modals/ChangePasswordModal.jsx:      toast.error(t("New password is required."));
+src/components/modals/ChangePasswordModal.jsx:      toast.error(t("New passwords do not match."));
+src/components/modals/ChangePasswordModal.jsx:      toast.success(t("Password updated successfully."));
+src/components/modals/ChangePasswordModal.jsx:      toast.error(msg);
+src/components/modals/AdminEventHallModal.jsx:    if (!formData.name) return toast.error(t("Name is required"));
+src/components/modals/AdminEventHallModal.jsx:        toast.success(t("Event Hall updated successfully"));
+src/components/modals/AdminEventHallModal.jsx:        toast.success(t("Event Hall added successfully"));
+src/components/modals/AdminEventHallModal.jsx:      toast.error(t(isEditing ? "Failed to update event hall" : "Failed to add event hall"));
+src/components/modals/DharamshalaBookingModal.jsx:          toast.error(t("Failed to load available room types"));
+src/components/modals/DharamshalaBookingModal.jsx:      toast.error(t("Please select a room type"));
+src/components/modals/DharamshalaBookingModal.jsx:      toast.success(t("Dharamshala booked successfully!"));
+src/components/modals/DharamshalaBookingModal.jsx:      toast.error(error?.response?.data?.error || t("Failed to book Dharamshala"));
+src/components/modals/ScanPassModal.jsx:    let toastId = toast.loading("Verifying Pass...");
+src/components/modals/ScanPassModal.jsx:      toast.success("Pass Scanned Successfully!", { id: toastId });
+src/components/modals/ScanPassModal.jsx:      toast.error(extractErrorMessage(e) || "Invalid or already scanned pass", { id: toastId });
+src/components/modals/ScanPassModal.jsx:          toast.error("Could not start camera. Using manual mode.");
+src/components/modals/BhojanshalaBookingModal.jsx:      toast.success(t("Bhojanshala Pass booked successfully!"));
+src/components/modals/BhojanshalaBookingModal.jsx:      toast.error(error?.response?.data?.message || t("Failed to book pass"));
+src/components/modals/PathshalaBookingModal.jsx:      toast.success(t("Pathshala registered successfully!"));
+src/components/modals/PathshalaBookingModal.jsx:      toast.error(error?.response?.data?.message || t("Failed to register for Pathshala"));
+src/components/common/MemberIdCardDialog.jsx:    toast.success(`OTP successfully verified on channel ${field.toUpperCase()}!`);
+src/components/common/MemberIdCardDialog.jsx:    if (!form.firstName) { toast.error(t("First Name is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.middleName) { toast.error(t("Middle Name is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.surname) { toast.error(t("Surname is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.mobile) { toast.error(t("Mobile Number is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.dob) { toast.error(t("Date of Birth is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.nationality) { toast.error(t("Nationality is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.pan) { toast.error(t("PAN Number is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!isValidPan(form.pan)) { toast.error(t("PAN must be 10 characters in the format ABCDE1234F.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.aadhaar) { toast.error(t("Aadhaar Number is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!isValidAadhaar(form.aadhaar)) { toast.error(t("Aadhaar Number must be exactly 12 digits.")); return; }
+src/components/common/MemberIdCardDialog.jsx:    if (!form.maritalStatus) { toast.error(t("Marital Status is required.")); return; }
+src/components/common/MemberIdCardDialog.jsx:      toast.success(t("Profile saved successfully."));
+src/components/common/MemberIdCardDialog.jsx:      toast.error(extractErrorMessage(e));
+src/components/common/MemberIdCardDialog.jsx:                    <Button variant="ghost" size="xs" type="button" className="text-xs font-semibold text-orange-500" onClick={() => toast.success(t("Document photo attached."))}>
+src/components/common/MemberIdCardDialog.jsx:                  <Button variant="ghost" size="xs" type="button" className="text-orange-500 font-semibold text-[10px]" onClick={() => toast.success(t("Latitude/Longitude coordinates detected dynamically."))}>
+src/components/common/MemberIdCardDialog.jsx:    if (!file) { toast.error(t("Please select an image first.")); return; }
+src/components/common/MemberIdCardDialog.jsx:      toast.success(t("Photo updated successfully."));
+src/components/common/MemberIdCardDialog.jsx:      toast.error(t("Failed to upload photo."));
+src/components/common/FileDropzone.jsx:      toast.success(`Uploaded ${results.length} file(s)`);
+src/components/common/FileDropzone.jsx:      toast.error("Upload failed. Check backend `POST " + uploadEndpoint + "`.");
+src/components/common/GenericListPage.jsx:    if (error) toast.error(error);
+src/components/common/EntityFormDialog.jsx:      toast.success(`${title} saved`);
+src/components/common/EntityFormDialog.jsx:      toast.error(extractErrorMessage(err));
+src/hooks/use-toast.js:          t.id === action.toast.id ? { ...t, ...action.toast } : t),
+src/hooks/use-toast.js:          addToRemoveQueue(toast.id)
+src/pages/NonJainMembersPage.jsx:    toast.success(`OTP successfully verified on channel ${field.toUpperCase()}!`);
+src/pages/NonJainMembersPage.jsx:    if (!form.firstName) { toast.error(t("First Name is required.")); return; }
+src/pages/NonJainMembersPage.jsx:    if (!form.mobile)    { toast.error(t("Mobile Number is required.")); return; }
+src/pages/NonJainMembersPage.jsx:    if (!form.currentAddress.country) { toast.error(t("Country is required.")); return; }
+src/pages/NonJainMembersPage.jsx:      toast.error(t("Please accept the mandatory consents & terms."));
+src/pages/NonJainMembersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/NonJainMembersPage.jsx:                toast.success(t("Member ID copied!"));
+src/pages/NonJainMembersPage.jsx:                          <Button variant="ghost" size="xs" type="button" className="text-xs font-semibold text-orange-500" onClick={() => toast.success(t("Document photo attached."))}>
+src/pages/NonJainMembersPage.jsx:                        <Button variant="ghost" size="xs" type="button" className="text-orange-500 font-semibold text-[10px]" onClick={() => toast.success(t("GPS Location auto-detected dynamically."))}>
+src/pages/LiveMapPage.jsx:      toast.error(t("Failed to fetch live monk locations."));
+src/pages/PollsPage.jsx:      toast.success(t("Poll created."));
+src/pages/PollsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/PollsPage.jsx:      toast.success(t("Vote recorded."));
+src/pages/PollsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/PollsPage.jsx:      toast.success(t("Poll closed successfully."));
+src/pages/PollsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/PollsPage.jsx:      toast.success(t("Poll deleted."));
+src/pages/PollsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/VisitorsPage.jsx:        toast.success(`Visitor checked in: ${evt.name || evt.visitorName || evt.publicId || "guest"}`);
+src/pages/VisitorsPage.jsx:        toast.info(`Visitor checked out: ${evt.name || evt.visitorName || "guest"}`);
+src/pages/VisitorsPage.jsx:      toast.error(t("Failed to load visitor records"));
+src/pages/VisitorsPage.jsx:        toast.success(t("Connection restored. No offline items to sync."));
+src/pages/VisitorsPage.jsx:      toast.loading(t("Internet restored. Synchronizing offline entries..."), { id: "sync" });
+src/pages/VisitorsPage.jsx:        toast.success(`Successfully synchronized ${successCount} offline visitor entries!`, { id: "sync" });
+src/pages/VisitorsPage.jsx:        toast.error(t("Offline sync failed. Will retry in background."), { id: "sync" });
+src/pages/VisitorsPage.jsx:      toast.warning(t("Offline Mode activated. Entries will be stored locally."));
+src/pages/VisitorsPage.jsx:    if (!memberPublicId.trim()) { toast.error(t("Please enter a Member ID.")); return; }
+src/pages/VisitorsPage.jsx:      toast.success("Member found: " + (res.data?.data?.fullName || ""));
+src/pages/VisitorsPage.jsx:      toast.error(extractErrorMessage(e) || "No active member found for this ID");
+src/pages/VisitorsPage.jsx:    if (!orgId) { toast.error(t("Please select an organization first.")); return; }
+src/pages/VisitorsPage.jsx:      toast.error(t("Vehicle Number is required. Enter Walk-In if on foot."));
+src/pages/VisitorsPage.jsx:      toast.success(t("Visitor Checked In Locally (Offline Mode Saved)"));
+src/pages/VisitorsPage.jsx:      toast.success(t("Visitor Checked In successfully!"));
+src/pages/VisitorsPage.jsx:      toast.error(extractErrorMessage(e) || e.message);
+src/pages/VisitorsPage.jsx:      toast.success(t("Visitor Checked Out Locally (Offline Saved)"));
+src/pages/VisitorsPage.jsx:      toast.success(t("Checked out successfully."));
+src/pages/VisitorsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/VisitorsPage.jsx:    if (!orgId) { toast.error(t("Please select an organization first.")); return; }
+src/pages/VisitorsPage.jsx:      toast.success(t("Visitor report exported successfully."));
+src/pages/VisitorsPage.jsx:      toast.error(t("Export failed"));
+src/pages/BookingCalendarPage.jsx:      toast.error(t("Failed to load booking calendar."));
+src/pages/GalleryPage.jsx:      toast.success(t("Album created."));
+src/pages/GalleryPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/GalleryPage.jsx:      toast.error(t("Only Super Admin can delete images."));
+src/pages/GalleryPage.jsx:      toast.success(t("Image deleted."));
+src/pages/GalleryPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/GalleryPage.jsx:                toast.success(t("Images added to album"));
+src/pages/GalleryPage.jsx:                toast.error(extractErrorMessage(err));
+src/pages/TourJatraPage.jsx:      toast.success(t("Jatra count recorded."));
+src/pages/TourJatraPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/TourJatraPage.jsx:      toast.error(t("Certificate not available yet. Complete jatra first."));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.success(t("Images uploaded successfully!"));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.success(t("Image deleted successfully!"));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.success(payload.pathshalaPublished ? t("Pathshala published successfully!") : t("Pathshala unpublished."));
+src/pages/pathshala/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/TrackingPage.jsx:      toast.error(t("Time is required."));
+src/pages/TrackingPage.jsx:      toast.success(t("Journey event logged successfully."));
+src/pages/TrackingPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MonksPage.jsx:    catch { setStatus(monk?.status || "ACTIVE"); toast.error(t("Failed to update status.")); }
+src/pages/MonksPage.jsx:      toast.success(t("Profile updated."));
+src/pages/MonksPage.jsx:    } catch { toast.error(t("Failed to save changes.")); }
+src/pages/MonksPage.jsx:    if (!photoFile) { toast.error(t("Select an image first.")); return; }
+src/pages/MonksPage.jsx:      toast.success(t("Photo updated."));
+src/pages/MonksPage.jsx:    } catch { toast.error(t("Photo upload failed.")); }
+src/pages/MonksPage.jsx:    if (!form.dikshaName) { toast.error(t("Diksha Name is required.")); return; }
+src/pages/MonksPage.jsx:      toast.success(t("MS (Maharaj Saheb) profile created successfully."));
+src/pages/MonksPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MonksPage.jsx:    if (!f.name.match(/\.xlsx?$/i)) { toast.error(t("Only .xlsx files are accepted.")); return; }
+src/pages/MonksPage.jsx:    if (!file) { toast.error(t("Select a file first.")); return; }
+src/pages/MonksPage.jsx:      if (data?.created > 0) { toast.success(`${data.created} monk(s) imported.`); onImported?.(); }
+src/pages/MonksPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/MonksPage.jsx:      toast.success(t("Monks exported."));
+src/pages/MonksPage.jsx:    } catch { toast.error(t("Export failed.")); }
+src/pages/AdminsPage.jsx:      toast.error(t("Failed to fetch administrative accounts."));
+src/pages/AdminsPage.jsx:      toast.error(`Failed to load organizations`);
+src/pages/AdminsPage.jsx:      toast.error(t("First Name and Mobile Number are required."));
+src/pages/AdminsPage.jsx:      toast.error(t("Please scope this administrator to at least one organization."));
+src/pages/AdminsPage.jsx:      toast.success(t("Administrator account registered successfully."));
+src/pages/AdminsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminsPage.jsx:      toast.success(t("Admin account deleted."));
+src/pages/AdminsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminsPage.jsx:      toast.success(`Admin status updated to ${nextStatus}.`);
+src/pages/AdminsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminsPage.jsx:      toast.success(t("Admin scopes updated."));
+src/pages/AdminsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminsPage.jsx:      toast.success(`Tab access permissions updated for ${tabAccessAdmin.firstName || "Administrator"}.`);
+src/pages/AdminsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminsPage.jsx:                    toast.success(t("Credentials copied to clipboard!"));
+src/pages/SupportTicketsPage.jsx:      toast.success(t("Ticket status updated successfully."));
+src/pages/SupportTicketsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BannersPage.jsx:      toast.error(t("Title and Image URL are required."));
+src/pages/BannersPage.jsx:        toast.error(validation.msg + " Please crop the image or adjust the target device.");
+src/pages/BannersPage.jsx:        toast.success(t("Banner updated."));
+src/pages/BannersPage.jsx:        toast.success(t("Banner added."));
+src/pages/BannersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/BannersPage.jsx:      toast.success(t("Banner removed."));
+src/pages/BannersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/BannersPage.jsx:      toast.success(`Banner ${row.isActive ? "deactivated" : "activated"}.`);
+src/pages/BannersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/EventHallTab.jsx:      toast.error(t("Failed to load event halls"));
+src/pages/EventHallTab.jsx:      toast.success(t("Event Hall deleted successfully"));
+src/pages/EventHallTab.jsx:      toast.error(t("Failed to delete event hall"));
+src/pages/EventHallTab.jsx:      toast.success(t(`Booking status updated to ${newStatus}`));
+src/pages/EventHallTab.jsx:      toast.error(t("Failed to update booking status"));
+src/pages/TicketsPage.jsx:      toast.success(`Checked in: ${data?.data?.publicId || "ticket"}`);
+src/pages/TicketsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/DonationReportsPage.jsx:      toast.error(t("Failed to load donation analytics report."));
+src/pages/DashboardPage.jsx:    if (!message.trim()) { toast.error(t("Please enter a message.")); return; }
+src/pages/DashboardPage.jsx:      toast.success(t("Reminder sent successfully!"));
+src/pages/DashboardPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/DashboardPage.jsx:      toast.success(`New booking ${evt.publicId || ""} · ${formatCurrency(evt.amount || 0)}`);
+src/pages/DashboardPage.jsx:      toast.success(`Donation received: ${formatCurrency(evt.amount || 0)} by ${evt.donorName || "Donor"}`);
+src/pages/StaffPage.jsx:      toast.error(t("Failed to load staff metrics"));
+src/pages/StaffPage.jsx:    if (!form.name.trim()) { toast.error(t("Staff Full Name is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.mobile.trim()) { toast.error(t("Mobile Number is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.dob) { toast.error(t("Date of Birth is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.gender) { toast.error(t("Gender is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.email.trim()) { toast.error(t("Email Address is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.aadhaar.trim()) { toast.error(t("Aadhaar Card Number is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!isValidAadhaar(form.aadhaar)) { toast.error(t("Aadhaar Number must be exactly 12 digits.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.pan.trim()) { toast.error(t("PAN Number is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!isValidPan(form.pan)) { toast.error(t("PAN must be 10 characters in the format ABCDE1234F.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.line?.trim()) { toast.error(t("Current Address Street / House is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.area?.trim()) { toast.error(t("Current Address Area is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.city?.trim()) { toast.error(t("Current Address City is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.state?.trim()) { toast.error(t("Current Address State is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.country?.trim()) { toast.error(t("Current Address Country is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.currentAddress.pincode?.trim()) { toast.error(t("Current Address Pincode is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.line?.trim()) { toast.error(t("Permanent Address Street / House is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.area?.trim()) { toast.error(t("Permanent Address Area is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.city?.trim()) { toast.error(t("Permanent Address City is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.state?.trim()) { toast.error(t("Permanent Address State is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.country?.trim()) { toast.error(t("Permanent Address Country is required.")); return false; }
+src/pages/StaffPage.jsx:      if (!form.permanentAddress.pincode?.trim()) { toast.error(t("Permanent Address Pincode is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.joiningDate) { toast.error(t("Joining Date is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.category) { toast.error(t("Staff Category Designation is required.")); return false; }
+src/pages/StaffPage.jsx:    if (form.category === "Other" && !form.categorySpecify?.trim()) { toast.error(t("Please specify Staff Category Name.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.reportingTo?.trim()) { toast.error(t("Reporting Manager Name is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.departmentId) { toast.error(t("Department Assign is required.")); return false; }
+src/pages/StaffPage.jsx:    if (form.departmentId === "OTHER" && !form.departmentSpecify?.trim()) { toast.error(t("Please specify Department Name.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.designationId) { toast.error(t("Designation Assign is required.")); return false; }
+src/pages/StaffPage.jsx:    if (form.designationId === "OTHER" && !form.designationSpecify?.trim()) { toast.error(t("Please specify Designation Name.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.emergencyName?.trim()) { toast.error(t("Emergency Contact Name is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.emergencyRelation?.trim()) { toast.error(t("Emergency Relationship is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.emergencyMobile?.trim()) { toast.error(t("Emergency Mobile Number is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.bloodGroup) { toast.error(t("Blood Group is required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.medicalConditions?.trim()) { toast.error(t("Medical Conditions details are required.")); return false; }
+src/pages/StaffPage.jsx:    if (!form.allergies?.trim()) { toast.error(t("Allergies details are required.")); return false; }
+src/pages/StaffPage.jsx:        toast.warning(
+src/pages/StaffPage.jsx:      toast.success(t("Staff profile created and unique Staff ID auto-generated!"));
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e) || "Failed to register staff");
+src/pages/StaffPage.jsx:      toast.error(t("Please select an organization first."));
+src/pages/StaffPage.jsx:      toast.success(t("Standard Working Hours configuration updated."));
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:      toast.error(t("Failed to generate QR signature."));
+src/pages/StaffPage.jsx:      toast.success(`Attendance successfully logged override for ${selectedStaffForAtt.member?.fullName}`);
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:      toast.success(t("Document uploaded. Preserving document replace audit logs."));
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:      toast.success(t("Leave request submitted successfully."));
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:      toast.success(`Leave request status updated: ${status}`);
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:        toast.warning(
+src/pages/StaffPage.jsx:      toast.success(`Tab access permissions updated for ${tabAccessStaff.member?.fullName || "Staff"}.`);
+src/pages/StaffPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/StaffPage.jsx:      toast.success(t("Report file downloaded successfully."));
+src/pages/StaffPage.jsx:      toast.error(t("Download failed"));
+src/pages/FeedPage.jsx:      toast.error(t("Failed to load feed"));
+src/pages/FeedPage.jsx:        toast.success(t("Bookmark removed"));
+src/pages/FeedPage.jsx:        toast.success(t("Post bookmarked"));
+src/pages/FeedPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/FeedPage.jsx:    toast.success(t("Deep link copied to clipboard!"));
+src/pages/FeedPage.jsx:      toast.error(t("Failed to load analytics"));
+src/pages/FeedPage.jsx:      toast.error(t("Title is required."));
+src/pages/FeedPage.jsx:      toast.success(t("Feed post published successfully!"));
+src/pages/FeedPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/FeedPage.jsx:                                    toast.success(t("Vote recorded successfully!"));
+src/pages/FeedPage.jsx:                                    toast.error(extractErrorMessage(e));
+src/pages/dharamshala/RoomStatusTab.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/RoomStatusTab.jsx:      toast.success(t("Room status updated"));
+src/pages/dharamshala/RoomStatusTab.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Building added successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Floor added successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Room added successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Amenities updated successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Rules updated successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Images uploaded successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(t("Image deleted successfully!"));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.success(payload.dharamshalaPublished ? t("Dharamshala published successfully!") : t("Dharamshala unpublished."));
+src/pages/dharamshala/DharamshalaManagementPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:        toast.success(t(`Booking ${status.toLowerCase()} successfully.`));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:        toast.success(t(`Payment ${status.toLowerCase()} successfully.`));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:        toast.success(t("Check-in successful."));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:        toast.success(t("Check-out successful."));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:      toast.error(t("Booking not found in the current list."));
+src/pages/dharamshala/DharamshalaBookingsPage.jsx:                                    toast.error(t(`You can only select up to ${selectedBooking.quantity || 1} room(s).`));
+src/pages/OffersPage.jsx:      toast.error(t("Failed to load offer boards"));
+src/pages/OffersPage.jsx:      toast.success(t("New offer published and Visibility target rules scheduled!"));
+src/pages/OffersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/OffersPage.jsx:      toast.success(t("Offer details updated successfully."));
+src/pages/OffersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/OffersPage.jsx:        toast.success(t("Offer removed from your Bookmarks list."));
+src/pages/OffersPage.jsx:        toast.success(t("Offer bookmarked! View under Saved Offers."));
+src/pages/OffersPage.jsx:      toast.error(t("Failed to update saved offers state"));
+src/pages/OffersPage.jsx:    toast.success(t("JiNANAM Deep Link copied to clipboard!"));
+src/pages/OffersPage.jsx:    toast.success(`Exporting Offers report as ${format.toUpperCase()}...`);
+src/pages/OffersPage.jsx:      toast.success(t("Offer moved to Expired/Archived lists."));
+src/pages/OffersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/SubscriptionPlansPage.jsx:      toast.error(t("Plan Name and Price are required."));
+src/pages/SubscriptionPlansPage.jsx:        toast.success(t("Plan updated successfully."));
+src/pages/SubscriptionPlansPage.jsx:        toast.success(t("Subscription plan created successfully."));
+src/pages/SubscriptionPlansPage.jsx:      toast.error(t("Subscription plan created successfully."));
+src/pages/SubscriptionPlansPage.jsx:      toast.success(t("Plan removed."));
+src/pages/SubscriptionPlansPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/SubscriptionPlansPage.jsx:      toast.success(`Plan ${row.isActive ? "deactivated" : "activated"}.`);
+src/pages/SubscriptionPlansPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/FaqPage.jsx:      toast.error(t("Failed to load FAQs."));
+src/pages/FaqPage.jsx:      toast.error(t("Please fill in both Question and Answer fields."));
+src/pages/FaqPage.jsx:        toast.success(t("FAQ updated successfully."));
+src/pages/FaqPage.jsx:        toast.success(t("FAQ added successfully."));
+src/pages/FaqPage.jsx:      toast.error(e?.response?.data?.message || "Failed to save FAQ.");
+src/pages/FaqPage.jsx:      toast.success(t("FAQ deleted."));
+src/pages/FaqPage.jsx:      toast.error(t("Failed to delete FAQ."));
+src/pages/member/MemberSupportPage.jsx:      toast.error(t("Failed to load your tickets"));
+src/pages/member/MemberSupportPage.jsx:      toast.error(t("Please enter both subject and message."));
+src/pages/member/MemberSupportPage.jsx:      toast.success(t("Support ticket submitted!"));
+src/pages/member/MemberSupportPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberDigitalIdPage.jsx:      toast.success(t("QR code regenerated"));
+src/pages/member/MemberDigitalIdPage.jsx:            toast.success(t("Copied to clipboard"));
+src/pages/member/MemberDigitalIdPage.jsx:      toast.success(t("Copied to clipboard"));
+src/pages/member/MemberDigitalIdPage.jsx:    if (!svg) { toast.error("QR not ready"); return; }
+src/pages/member/MemberDigitalIdPage.jsx:      toast.success(t("Pass downloaded!"));
+src/pages/member/BookingDetailPage.jsx:      .catch((e) => { setBooking(null); toast.error(extractErrorMessage(e)); })
+src/pages/member/BookingDetailPage.jsx:    if (!file) { toast.error(t("Please attach the payment screenshot.")); return; }
+src/pages/member/BookingDetailPage.jsx:      toast.success(t("Payment proof submitted successfully! Verification pending."));
+src/pages/member/BookingDetailPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/BookingDetailPage.jsx:      toast.success(t("Cancellation request submitted for admin approval."));
+src/pages/member/BookingDetailPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/member/MyTicketsPage.jsx:        toast.error(extractErrorMessage(e));
+src/pages/member/MemberDonationsPage.jsx:        toast.error(extractErrorMessage(e));
+src/pages/member/MemberDonationsPage.jsx:      else toast.error(t("Receipt not available yet."));
+src/pages/member/MemberDonationsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/member/MemberToursPage.jsx:      toast.error(t("Your member ID isn't available. Please sign in again."));
+src/pages/member/MemberToursPage.jsx:      toast.success(t("Registered for the yatra! Track your jatra progress from this card."));
+src/pages/member/MemberToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MyBookingsPage.jsx:        toast.error(extractErrorMessage(e));
+src/pages/member/MemberVolunteersPage.jsx:      toast.success(t("Application submitted. The organiser will review it."));
+src/pages/member/MemberVolunteersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberLoginPage.jsx:      toast.error(msg);
+src/pages/member/MemberLoginPage.jsx:      toast.success(t("Welcome back! Jai Jinendra 🙏"));
+src/pages/member/MemberLoginPage.jsx:      toast.error(t("Please enter your mobile number."));
+src/pages/member/MemberLoginPage.jsx:      toast.success(t("Verification OTP sent via MSG91."));
+src/pages/member/MemberLoginPage.jsx:      toast.error(t("Please enter the OTP."));
+src/pages/member/MemberLoginPage.jsx:      toast.success(t("Login successful! Jai Jinendra 🙏"));
+src/pages/member/MemberLoginPage.jsx:                        onClick={() => toast.info(t("Password reset link sent to your registered contact."))}
+src/pages/member/MemberOffersPage.jsx:      toast.success(wasSaved ? t("Offer removed from your Bookmarks list.") : t("Offer bookmarked! View under Saved Offers."));
+src/pages/member/MemberOffersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberOffersPage.jsx:    toast.success(t("Link copied to clipboard!"));
+src/pages/member/MemberEventDetailPage.jsx:      toast.error(t("Please enter the number of attendees."));
+src/pages/member/MemberEventDetailPage.jsx:      if (status === "WAITING_LIST") toast.success(t("You have joined the waiting list."));
+src/pages/member/MemberEventDetailPage.jsx:      else if (status === "CLOSED") toast.error(t("RSVP is closed for this event."));
+src/pages/member/MemberEventDetailPage.jsx:      else toast.success(t("RSVP confirmed."));
+src/pages/member/MemberEventDetailPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberEventDetailPage.jsx:      toast.success(t("RSVP cancelled."));
+src/pages/member/MemberEventDetailPage.jsx:      toast.error(extractErrorMessage(err)); 
+src/pages/member/MemberRegisterPage.jsx:    if (!normMobile) { toast.error(t("Mobile Number is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:        toast.info(t("This mobile number is already registered. Please login."));
+src/pages/member/MemberRegisterPage.jsx:      toast.success(t("MSG91 OTP sent to (+91)."));
+src/pages/member/MemberRegisterPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/member/MemberRegisterPage.jsx:      toast.success(t("Mobile number verified successfully."));
+src/pages/member/MemberRegisterPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/member/MemberRegisterPage.jsx:    if (!firstName.trim()) { toast.error(t("First Name is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:    if (!surname.trim()) { toast.error(t("Surname is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:    if (!dob) { toast.error(t("Date of Birth is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:    if (!pan.trim()) { toast.error(t("PAN Number is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:    if (!aadhaar.trim()) { toast.error(t("Aadhaar Number is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:    if (!addressLine.trim()) { toast.error(t("Address is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:      if (!communityId) { toast.error(t("Community is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:      if (!tithiCalendarTypeId) { toast.error(t("Calendar Type is required.")); return; }
+src/pages/member/MemberRegisterPage.jsx:      toast.error(t("Mandatory Terms & Consents must be accepted.")); return;
+src/pages/member/MemberRegisterPage.jsx:      toast.error(t("Guardian consent required for members under 18 years of age.")); return;
+src/pages/member/MemberRegisterPage.jsx:      toast.success(t("ACCOUNT CREATED SUCCESSFULLY — Unique Member ID: {0}", [generatedId]));
+src/pages/member/MemberRegisterPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberRegisterPage.jsx:                toast.success(t("Unique Member ID copied to clipboard!"));
+src/pages/member/MemberMSDetailPage.jsx:      toast.success(t("MS link copied to clipboard"));
+src/pages/member/MemberMSDetailPage.jsx:      toast.error(t("Please enter the details of the incorrect information."));
+src/pages/member/MemberMSDetailPage.jsx:      toast.success(t("Support Ticket created. Thank you for keeping the directory accurate!"));
+src/pages/member/MemberMSDetailPage.jsx:      toast.error(t("Failed to submit support ticket."));
+src/pages/member/MemberNotificationPreferencesPage.jsx:      toast.success(t("Preferences saved."));
+src/pages/member/MemberNotificationPreferencesPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberFeedPage.jsx:      toast.success(
+src/pages/member/MemberFeedPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberFeedPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberFeedPage.jsx:      toast.success(t("Link copied to clipboard"));
+src/pages/member/MemberNewsPage.jsx:      toast.success(wasBookmarked ? t("Article removed from bookmarks.") : t("Article bookmarked!"));
+src/pages/member/MemberNewsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberNewsPage.jsx:      toast.success(t("News link copied to clipboard!"));
+src/pages/member/MemberHomePage.jsx:      toast.success(t("RSVP confirmed. See you there!"));
+src/pages/member/MemberHomePage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberBookmarksPage.jsx:      toast.success(
+src/pages/member/MemberBookmarksPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberBookmarksPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberBookmarksPage.jsx:      toast.success(t("Link copied to clipboard"));
+src/pages/member/MemberTempleListPage.jsx:      toast.success(t("Link copied to clipboard!"));
+src/pages/member/MemberTempleListPage.jsx:    toast.success(t("Support Ticket created for reporting incorrect information on {0} ({1}). Track in Support.", [tName, tId]));
+src/pages/member/MemberCommunityPageDetailPage.jsx:      toast.success(t("Request sent. You'll be notified once approved."));
+src/pages/member/MemberCommunityPageDetailPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberCommunityPageDetailPage.jsx:      toast.success(t("You've left this community page."));
+src/pages/member/MemberCommunityPageDetailPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberCommunityPageDetailPage.jsx:    else { navigator.clipboard.writeText(url); toast.success(t("Link copied to clipboard")); }
+src/pages/member/MemberBookingPage.jsx:      toast.error(t("Cannot book more rooms than currently available") + ` (${maxQty}).`);
+src/pages/member/MemberBookingPage.jsx:      toast.success(t("Booking request submitted! Awaiting administrator approval."));
+src/pages/member/MemberBookingPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberJatraProgressPage.jsx:      toast.success(t("Jatra count recorded."));
+src/pages/member/MemberJatraProgressPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberJatraProgressPage.jsx:      toast.error(t("Certificate not available yet. Complete the yatra first."));
+src/pages/member/FeedPostCard.jsx:      toast.error("Failed to toggle like");
+src/pages/member/FeedPostCard.jsx:      toast.success("Post reported successfully");
+src/pages/member/FeedPostCard.jsx:      toast.error("Failed to report post");
+src/pages/member/MemberEventsPage.jsx:      .catch((e) => { setRows([]); toast.error(extractErrorMessage(e)); })
+src/pages/member/MemberEventsPage.jsx:      toast.error(t("Please enter the number of attendees."));
+src/pages/member/MemberEventsPage.jsx:      if (status === "WAITING_LIST") toast.success(t("You have joined the waiting list."));
+src/pages/member/MemberEventsPage.jsx:      else if (status === "CLOSED") toast.error(t("RSVP is closed for this event."));
+src/pages/member/MemberEventsPage.jsx:      else toast.success(t("RSVP confirmed."));
+src/pages/member/MemberEventsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/member/MemberEventsPage.jsx:      toast.success(t("RSVP cancelled. The next member on the waiting list has been promoted."));
+src/pages/member/MemberEventsPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/member/MemberEditProfilePage.jsx:      toast.success(t("Profile updated successfully"));
+src/pages/member/MemberEditProfilePage.jsx:      toast.error(error.message || t("Failed to update profile"));
+src/pages/NewsPage.jsx:      toast.error(t("Failed to load news feed board"));
+src/pages/NewsPage.jsx:      toast.error(t("News headline and description body are required."));
+src/pages/NewsPage.jsx:      toast.success(t("News article published successfully! Global notification broadcasted."));
+src/pages/NewsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/NewsPage.jsx:      toast.success(t("News article details updated."));
+src/pages/NewsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/NewsPage.jsx:        toast.success(t("Article removed from bookmarks."));
+src/pages/NewsPage.jsx:        toast.success(t("Article bookmarked!"));
+src/pages/NewsPage.jsx:      toast.error(t("Failed to update bookmark state"));
+src/pages/NewsPage.jsx:    toast.success(t("JiNANAM Deep Link copied to clipboard!"));
+src/pages/NewsPage.jsx:      toast.success(t("News article permanently removed."));
+src/pages/NewsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/NewsPage.jsx:      toast.success(t("News article restored to active timeline."));
+src/pages/NewsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/NewsPage.jsx:      toast.success(t("Report downloaded."));
+src/pages/NewsPage.jsx:      toast.error(t("Export failed"));
+src/pages/NotificationPreferencesPage.jsx:      toast.success(t("Preferences saved."));
+src/pages/NotificationPreferencesPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminReportsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AdminReportsPage.jsx:    toast.success(`Exporting Admin Reports in ${format.toUpperCase()} format...`);
+src/pages/BulkImportPage.jsx:      toast.success(t("Import complete."));
+src/pages/BulkImportPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BulkImportPage.jsx:                onUploaded={(url) => toast.success(t("File uploaded, parsing…"))}
+src/pages/MasterDataPage.jsx:      toast.success(t("Item added."));
+src/pages/MasterDataPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/MasterDataPage.jsx:      toast.success(t("Master data item updated successfully!"));
+src/pages/MasterDataPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MasterDataPage.jsx:      toast.success(t("Item removed."));
+src/pages/MasterDataPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/IncorrectReportsPage.jsx:      toast.error(t("Failed to load flagged reports."));
+src/pages/IncorrectReportsPage.jsx:      toast.success(`Flagged information marked as ${status.toLowerCase()}.`);
+src/pages/IncorrectReportsPage.jsx:      toast.error(t("Failed to update report status."));
+src/pages/AdsPage.jsx:      toast.error(t("Banner image URL is required."));
+src/pages/AdsPage.jsx:      toast.success(t("Advertisement created successfully."));
+src/pages/AdsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AlertsPage.jsx:      toast.warning(`New ${evt.severity || "alert"}: ${evt.message || evt.type}`);
+src/pages/AlertsPage.jsx:      toast.success(t("Alert resolved."));
+src/pages/AlertsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/ChaturmasPage.jsx:        api.get(chaturmasEndpoint).catch((err) => { toast.error("chaturmas error: " + err.message); return { data: { data: [] } }; }),
+src/pages/ChaturmasPage.jsx:        api.get(`/monks`).catch((err) => { toast.error("monks error: " + err.message); return { data: { data: [] } }; }),
+src/pages/ChaturmasPage.jsx:        api.get(`/temples`).catch((err) => { toast.error("temples error: " + err.message); return { data: { data: [] } }; }),
+src/pages/ChaturmasPage.jsx:        api.get(`/sthanaks`).catch((err) => { toast.error("sthanaks error: " + err.message); return { data: { data: [] } }; }),
+src/pages/ChaturmasPage.jsx:        api.get(`/jain-centers`).catch((err) => { toast.error("jain-centers error: " + err.message); return { data: { data: [] } }; })
+src/pages/ChaturmasPage.jsx:      toast.error(t("Failed to load Chaturmas stays and monks."));
+src/pages/ChaturmasPage.jsx:      toast.error(t("Please fill in monk name, location and start date."));
+src/pages/ChaturmasPage.jsx:      toast.error(t("Please select a Temple from the list to link this Chaturmas entry."));
+src/pages/ChaturmasPage.jsx:        toast.success(t("Chaturmas listing updated successfully!"));
+src/pages/ChaturmasPage.jsx:        toast.success(t("Chaturmas listing added successfully!"));
+src/pages/ChaturmasPage.jsx:      toast.error(e?.response?.data?.message || "Failed to save Chaturmas stay.");
+src/pages/ChaturmasPage.jsx:      toast.success(t("Chaturmas listing deleted."));
+src/pages/ChaturmasPage.jsx:      toast.error(t("Failed to delete Chaturmas listing."));
+src/pages/SettingsPage.jsx:      toast.success(t("Permissions saved."));
+src/pages/SettingsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/SettingsPage.jsx:      toast.success(t("Setting updated."));
+src/pages/SettingsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/SettingsPage.jsx:      toast.success(t("Threshold updated."));
+src/pages/SettingsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/SettingsPage.jsx:      toast.error(t("Failed to search members."));
+src/pages/SettingsPage.jsx:      toast.error(t("Failed to load user permission overrides."));
+src/pages/SettingsPage.jsx:      toast.error(t("Selected member does not have a linked User ID."));
+src/pages/SettingsPage.jsx:      toast.success(t("Permission override saved."));
+src/pages/SettingsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/SettingsPage.jsx:      toast.success(t("Override removed."));
+src/pages/SettingsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/SettingsPage.jsx:      toast.error(t("Failed to load organization settings."));
+src/pages/SettingsPage.jsx:      toast.success(t("Organization settings updated successfully."));
+src/pages/SettingsPage.jsx:      toast.error(t("Failed to update organization settings."));
+src/pages/OrgDetailPage.jsx:    if (!files.length) { toast.error(t("Select at least one image.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(`${files.length} image(s) uploaded.`);
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error("Upload failed. " + e.message); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Image deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:    if (!form.memberId) { toast.error(t("Select a member.")); return; }
+src/pages/OrgDetailPage.jsx:    if (!form.designation) { toast.error(t("Designation is required.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Trustee added."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Trustee removed."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:    if (!form.memberId) { toast.error(t("Select a member.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Contact added."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Contact removed."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:    if (!form.title || !form.body) { toast.error(t("Fill in title and notice text.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Notice published."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Notice deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:    if (!form.title || !form.body) { toast.error(t("Fill in title and announcement text.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Announcement published."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Announcement deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Review deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Reply submitted successfully!"));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Review published successfully!"));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Review submitted successfully! It will be visible once approved."));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/OrgDetailPage.jsx:    if (!form.year) { toast.error(t("Year is required.")); return; }
+src/pages/OrgDetailPage.jsx:        toast.success(t("Dhaja record updated."));
+src/pages/OrgDetailPage.jsx:        toast.success(t("Dhaja record saved."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Dhaja record deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.error(t("Maximum 20 images allowed per Chaturmas entry."));
+src/pages/OrgDetailPage.jsx:      toast.error(t("Maximum 20 images allowed in total."));
+src/pages/OrgDetailPage.jsx:      toast.error(t("Please provide both Link Title and Link URL."));
+src/pages/OrgDetailPage.jsx:      toast.error(t("Maximum 5 links allowed per Chaturmas entry."));
+src/pages/OrgDetailPage.jsx:      toast.error(t("Year, Start Date, and End Date are required."));
+src/pages/OrgDetailPage.jsx:        toast.success(t("Chaturmas entry updated successfully."));
+src/pages/OrgDetailPage.jsx:        toast.success(t("Chaturmas entry created successfully."));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Chaturmas stay record deleted."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:    if (!deityName.trim()) { toast.error(t("Deity name is required.")); return; }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Deity created successfully!"));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/OrgDetailPage.jsx:        toast.error(t("Please select a Parent Temple / Organization since 'Temple Available Inside?' is checked."));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Details updated successfully."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.error(t("Title, start date, and end date are required."));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Event created."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.success(t("Event cancelled."));
+src/pages/OrgDetailPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/OrgDetailPage.jsx:      toast.error(t("Following is a member feature. Your account is not linked to a member profile."));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Logo updated."));
+src/pages/OrgDetailPage.jsx:    } catch { toast.error(t("Logo upload failed.")); }
+src/pages/OrgDetailPage.jsx:      toast.error(t("Please provide the incorrect field and a description."));
+src/pages/OrgDetailPage.jsx:      toast.success(t("Support ticket registered successfully. You can track status in the app."));
+src/pages/OrgDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/PathshalaManagementPage.jsx:      toast.success(payload.pathshalaPublished ? "Pathshala published successfully!" : "Pathshala unpublished.");
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/PathshalaManagementPage.jsx:      toastId = toast.loading("Cancelling pass...");
+src/pages/PathshalaManagementPage.jsx:      toast.success("Pass cancelled successfully", { id: toastId });
+src/pages/PathshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/PathshalaManagementPage.jsx:      toastId = toast.loading("Approving pass...");
+src/pages/PathshalaManagementPage.jsx:      toast.success("Pass approved successfully", { id: toastId });
+src/pages/PathshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/PathshalaManagementPage.jsx:      toastId = toast.loading("Moving to pending...");
+src/pages/PathshalaManagementPage.jsx:      toast.success("Pass marked as pending", { id: toastId });
+src/pages/PathshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/PathshalaManagementPage.jsx:      .catch(err => toast.error(extractErrorMessage(err)))
+src/pages/PathshalaManagementPage.jsx:      toast.error("Please enter a valid mobile number.");
+src/pages/PathshalaManagementPage.jsx:      toast.success("Manager added successfully!");
+src/pages/PathshalaManagementPage.jsx:        toast.info(`Generated Password: ${res.data.data.tempPassword}`, { duration: 10000 });
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/PathshalaManagementPage.jsx:      toast.success("Manager removed successfully.");
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/PathshalaManagementPage.jsx:      toast.success("Settings saved successfully!");
+src/pages/PathshalaManagementPage.jsx:      toast.error("Error saving settings: " + extractErrorMessage(err));
+src/pages/PathshalaManagementPage.jsx:      toast.success(payload.pathshalaPublished ? "Pathshala published successfully!" : "Pathshala unpublished.");
+src/pages/PathshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/BhojanshalaManagementPage.jsx:      toast.success(payload.bhojanshalaPublished ? "Bhojanshala published successfully!" : "Bhojanshala unpublished.");
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/BhojanshalaManagementPage.jsx:      toastId = toast.loading("Cancelling pass...");
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Pass cancelled successfully", { id: toastId });
+src/pages/BhojanshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/BhojanshalaManagementPage.jsx:      toastId = toast.loading("Approving pass...");
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Pass approved successfully", { id: toastId });
+src/pages/BhojanshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/BhojanshalaManagementPage.jsx:      toastId = toast.loading("Moving to pending...");
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Pass marked as pending", { id: toastId });
+src/pages/BhojanshalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/BhojanshalaManagementPage.jsx:      .catch(err => toast.error(extractErrorMessage(err)))
+src/pages/BhojanshalaManagementPage.jsx:      toast.error("Please enter a valid mobile number.");
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Manager added successfully!");
+src/pages/BhojanshalaManagementPage.jsx:        toast.info(`Generated Password: ${res.data.data.tempPassword}`, { duration: 10000 });
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Manager removed successfully.");
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BhojanshalaManagementPage.jsx:      toast.success("Settings saved successfully!");
+src/pages/BhojanshalaManagementPage.jsx:      toast.error("Error saving settings: " + extractErrorMessage(err));
+src/pages/BhojanshalaManagementPage.jsx:      toast.success(payload.bhojanshalaPublished ? "Bhojanshala published successfully!" : "Bhojanshala unpublished.");
+src/pages/BhojanshalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/CalendarPage.jsx:      toast.success(t("Correction ticket raised."));
+src/pages/CalendarPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/GaushalaManagementPage.jsx:      toast.success(payload.gaushalaPublished ? "Gaushala published successfully!" : "Gaushala unpublished.");
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/GaushalaManagementPage.jsx:      toastId = toast.loading("Cancelling pass...");
+src/pages/GaushalaManagementPage.jsx:      toast.success("Pass cancelled successfully", { id: toastId });
+src/pages/GaushalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/GaushalaManagementPage.jsx:      toastId = toast.loading("Approving pass...");
+src/pages/GaushalaManagementPage.jsx:      toast.success("Pass approved successfully", { id: toastId });
+src/pages/GaushalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/GaushalaManagementPage.jsx:      toastId = toast.loading("Moving to pending...");
+src/pages/GaushalaManagementPage.jsx:      toast.success("Pass marked as pending", { id: toastId });
+src/pages/GaushalaManagementPage.jsx:      if (toastId) toast.dismiss(toastId);
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/GaushalaManagementPage.jsx:      .catch(err => toast.error(extractErrorMessage(err)))
+src/pages/GaushalaManagementPage.jsx:      toast.error("Please enter a valid mobile number.");
+src/pages/GaushalaManagementPage.jsx:      toast.success("Manager added successfully!");
+src/pages/GaushalaManagementPage.jsx:        toast.info(`Generated Password: ${res.data.data.tempPassword}`, { duration: 10000 });
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/GaushalaManagementPage.jsx:      toast.success("Manager removed successfully.");
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/GaushalaManagementPage.jsx:      toast.success("Settings saved successfully!");
+src/pages/GaushalaManagementPage.jsx:      toast.error("Error saving settings: " + extractErrorMessage(err));
+src/pages/GaushalaManagementPage.jsx:      toast.success(payload.gaushalaPublished ? "Gaushala published successfully!" : "Gaushala unpublished.");
+src/pages/GaushalaManagementPage.jsx:      toast.error(extractErrorMessage(error));
+src/pages/MonkDetailPage.jsx:        toast.error(t("Failed to load Maharaj Saheb profile."));
+src/pages/MonkDetailPage.jsx:        toast.success(t("Unfollowed Maharaj Saheb."));
+src/pages/MonkDetailPage.jsx:        toast.success(t("Following Maharaj Saheb!"));
+src/pages/MonkDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MonkDetailPage.jsx:      toast.error(t("Please describe the incorrect information."));
+src/pages/MonkDetailPage.jsx:      toast.success(t("Support ticket created. Admin will review the corrections."));
+src/pages/MonkDetailPage.jsx:      toast.error(t("Failed to submit support ticket."));
+src/pages/MonkDetailPage.jsx:      toast.success(t("MS Profile updated successfully."));
+src/pages/MonkDetailPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/RolesPermissionsPage.jsx:      toast.success(t("Permissions saved successfully."));
+src/pages/RolesPermissionsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/VolunteersPage.jsx:      toast.success(allow ? "Volunteer approved." : "Volunteer rejected.");
+src/pages/VolunteersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/VolunteersPage.jsx:    if (!form.eventName.trim()) { toast.error(t("Event name is required.")); return; }
+src/pages/VolunteersPage.jsx:    if (form.roles.some((r) => !r.title.trim())) { toast.error(t("All role titles must be filled in.")); return; }
+src/pages/VolunteersPage.jsx:        toast.success(t("Opportunity updated successfully!"));
+src/pages/VolunteersPage.jsx:        toast.success(t("Opportunity created successfully!"));
+src/pages/VolunteersPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/DonationsPage.jsx:      toast.success(action === "verify" ? "Donation Verified" : "Donation Rejected");
+src/pages/DonationsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/DonationsPage.jsx:    if (!finalOrgId) { toast.error(t("Please select a temple/organization.")); return; }
+src/pages/DonationsPage.jsx:    if (!amount || Number(amount) <= 0) { toast.error(t("Please enter a valid amount.")); return; }
+src/pages/DonationsPage.jsx:      toast.error(`Category splits sum (₹${splitsSum}) must equal total amount (₹${totalAmountNum}). Click "Split Evenly" to auto-allocate.`);
+src/pages/DonationsPage.jsx:      toast.success(t("Donation recorded successfully."));
+src/pages/DonationsPage.jsx:      toast.error(extractErrorMessage(err) || "Failed to record donation");
+src/pages/RoutesPage.jsx:      toast.error(t("Failed to load data."));
+src/pages/RoutesPage.jsx:      toast.error(t("Please fill in Route Name, Target (at least one), and Vihar Start Date."));
+src/pages/RoutesPage.jsx:      toast.error(t("Please provide at least 2 stops."));
+src/pages/RoutesPage.jsx:          toast.error(t(`Stop ${i + 1} date/time cannot be before Stop ${i} date/time.`));
+src/pages/RoutesPage.jsx:        toast.success(t("Vihar route updated successfully."));
+src/pages/RoutesPage.jsx:        toast.success(t("New Vihar route created successfully."));
+src/pages/RoutesPage.jsx:      toast.error(e?.response?.data?.message || t("Failed to save route."));
+src/pages/FeedAnalyticsPage.jsx:    toast.success(t("Downloading CSV report..."));
+src/pages/HomeSectionsPage.jsx:    if (!form.name) { toast.error(t("Section Name is required.")); return; }
+src/pages/HomeSectionsPage.jsx:        toast.success(t("Home section updated."));
+src/pages/HomeSectionsPage.jsx:        toast.success(t("Home section added."));
+src/pages/HomeSectionsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/HomeSectionsPage.jsx:      toast.success(t("Section removed."));
+src/pages/HomeSectionsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/HomeSectionsPage.jsx:      toast.success(`Section ${row.isActive ? "deactivated" : "activated"}.`);
+src/pages/HomeSectionsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/ReceiptsPage.jsx:    toast.success(`Receipt ${r.receiptNumber} downloaded successfully as PDF.`);
+src/pages/MembersPage.jsx:      toast.error(t("Only .xlsx / .xls files are accepted."));
+src/pages/MembersPage.jsx:    if (!file) { toast.error(t("Please select a file first.")); return; }
+src/pages/MembersPage.jsx:        toast.success(`${data.created} member(s) imported successfully.`);
+src/pages/MembersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MembersPage.jsx:    toast.success(`OTP successfully verified on channel ${field.toUpperCase()}!`);
+src/pages/MembersPage.jsx:    if (!form.firstName) { toast.error(t("First Name is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.middleName) { toast.error(t("Middle Name is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.surname) { toast.error(t("Surname is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.mobile) { toast.error(t("Mobile Number is required.")); return; }
+src/pages/MembersPage.jsx:    if (form.emergencyName && !form.emergencyRelation) { toast.error(t("Emergency Contact Relationship is required when a contact name is given.")); return; }
+src/pages/MembersPage.jsx:    if (!form.gender) { toast.error(t("Gender is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.dob) { toast.error(t("Date of Birth is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.nationality) { toast.error(t("Nationality is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.pan) { toast.error(t("PAN Number is required.")); return; }
+src/pages/MembersPage.jsx:    if (!isValidPan(form.pan)) { toast.error(t("PAN must be 10 characters in the format ABCDE1234F.")); return; }
+src/pages/MembersPage.jsx:    if (!form.aadhaar) { toast.error(t("Aadhaar Number is required.")); return; }
+src/pages/MembersPage.jsx:    if (!isValidAadhaar(form.aadhaar)) { toast.error(t("Aadhaar Number must be exactly 12 digits.")); return; }
+src/pages/MembersPage.jsx:    if (!form.maritalStatus) { toast.error(t("Marital Status is required.")); return; }
+src/pages/MembersPage.jsx:    if (cat === "jain" && !form.motherTongue) { toast.error(t("Mother Tongue is required in Community Details.")); return; }
+src/pages/MembersPage.jsx:    if (cat === "jain" && !form.tithiCalendar) { toast.error(t("Tithi Calendar Type is required in Community Details.")); return; }
+src/pages/MembersPage.jsx:    if (cat === "jain" && !form.sect) { toast.error(t("Jain Sect is required in Community Details.")); return; }
+src/pages/MembersPage.jsx:    if (cat === "jain" && !form.subCommunity) { toast.error(t("Sub Sect / Community is required in Community Details.")); return; }
+src/pages/MembersPage.jsx:    if (!form.currentAddress.line1) { toast.error(t("Current Address (Full Address) is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.currentAddress.city) { toast.error(t("Current Address City is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.currentAddress.state) { toast.error(t("Current Address State is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.currentAddress.pincode) { toast.error(t("Current Address Pin Code is required.")); return; }
+src/pages/MembersPage.jsx:    if (!form.permanentAddress.line1 && !form.sameAsPermanent) { toast.error(t("Permanent Address is required. Check \"Same as Current\" if applicable.")); return; }
+src/pages/MembersPage.jsx:    if (cat === "jain" && !form.agreeData) { toast.error(t("Please accept the mandatory data processing consent.")); return; }
+src/pages/MembersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MembersPage.jsx:                toast.success(t("Member ID copied!"));
+src/pages/MembersPage.jsx:                        <Button variant="ghost" size="xs" type="button" className="text-orange-500 font-semibold text-[10px]" onClick={() => toast.success(t("Latitude/Longitude coordinates detected dynamically."))}>
+src/pages/MembersPage.jsx:      toast.success(`Exported ${rows.length} filtered member${rows.length === 1 ? "" : "s"}.`);
+src/pages/MembersPage.jsx:      toast.success(t("Members exported successfully."));
+src/pages/MembersPage.jsx:    if (!memberId) { toast.error(t("Cannot save — member ID is missing.")); return; }
+src/pages/MembersPage.jsx:      toast.success(`Member "${member.fullName || member.firstName || "Profile"}" activated successfully.`);
+src/pages/MembersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/MembersPage.jsx:      toast.success(`Member marked Inactive.`);
+src/pages/MembersPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/OrgListPage.jsx:      toast.success(t(`Publish status updated successfully`));
+src/pages/OrgListPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/OrgListPage.jsx:    if (!deityName.trim()) { toast.error(t("Deity name is required.")); return; }
+src/pages/OrgListPage.jsx:      toast.success(t("Deity created successfully!"));
+src/pages/OrgListPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/OrgListPage.jsx:        toast.error(t("Please select a Parent Temple / Organization since 'Temple Available Inside?' is checked."));
+src/pages/OrgListPage.jsx:        toast.error(t("Please select at least one Bhojanshala to link."));
+src/pages/OrgListPage.jsx:        toast.error(t("Please select at least one Dharamshala to link."));
+src/pages/OrgListPage.jsx:      toast.success(`${label} created successfully.`);
+src/pages/OrgListPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/EventsReportsPage.jsx:      toast.error(t("Failed to load event attendance report."));
+src/pages/CommunityPagesPage.jsx:      toast.success(status === "APPROVED" ? "You have joined the community!" : "Join request sent! Waiting for approval.");
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("You have left the community."));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:    if (!editForm.name?.trim()) { toast.error(t("Page name is required.")); return; }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Page updated successfully!"));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:    if (!rows?.length) { toast.error(t("No members to export.")); return; }
+src/pages/CommunityPagesPage.jsx:    toast.success(`Exported ${rows.length} members as CSV.`);
+src/pages/CommunityPagesPage.jsx:      toast.success(decision === "APPROVED" ? "Member approved." : "Member rejected.");
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Member removed."));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:    if (!newPost.description.trim()) { toast.error(t("Post content is required.")); return; }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Post published successfully!"));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Settings updated."));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:      toast.success(`Page status updated to ${targetStatus}.`);
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Page deleted successfully."));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:    if (!form.name.trim()) { toast.error(t("Page name is required.")); return; }
+src/pages/CommunityPagesPage.jsx:      toast.success(t("Community Page created!"));
+src/pages/CommunityPagesPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/CommunityPagesPage.jsx:                toast.success(t("Support Ticket raised successfully! Our team will contact you."));
+src/pages/CommunityPagesPage.jsx:                toast.success(t("Support Ticket request registered. JiNANAM team notified!"));
+src/pages/CountersPage.jsx:      toast.error(t("Failed to load counter dashboard data."));
+src/pages/CountersPage.jsx:      toast.error(t("Failed to load leaderboard."));
+src/pages/CountersPage.jsx:      toast.error(t("Please enter a counter type name."));
+src/pages/CountersPage.jsx:      toast.success(t("Counter type added successfully."));
+src/pages/CountersPage.jsx:      toast.error(e?.response?.data?.message || "Failed to add counter type.");
+src/pages/CountersPage.jsx:      toast.success(`Reset counts for ${name}`);
+src/pages/CountersPage.jsx:      toast.error(e?.response?.data?.message || "Failed to reset counter.");
+src/pages/CountersPage.jsx:      toast.success(`Deleted ${name}`);
+src/pages/CountersPage.jsx:      toast.error(e?.response?.data?.message || "Failed to delete counter type.");
+src/pages/ManualTrackingPage.jsx:      toast.error(t("MS Name and Current Station are required."));
+src/pages/ManualTrackingPage.jsx:      toast.success(t("Manual vihar location logged successfully."));
+src/pages/ManualTrackingPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/ManualTrackingPage.jsx:      toast.success(t("Entry deleted."));
+src/pages/ManualTrackingPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/LoginPage.jsx:      toast.success(t("Welcome back!"));
+src/pages/LoginPage.jsx:        toast.info(`DEV OTP Code: ${res.devOtp}`, { duration: 10000 });
+src/pages/LoginPage.jsx:        toast.success(t("MSG91 OTP sent to your Indian mobile number (+91)."));
+src/pages/LoginPage.jsx:      toast.success(t("Signed in successfully."));
+src/pages/LoginPage.jsx:        toast.info(`DEV Email OTP Code: ${res.devOtp}`, { duration: 10000 });
+src/pages/LoginPage.jsx:        toast.success(t("Verification OTP sent to your Email address."));
+src/pages/LoginPage.jsx:      toast.success(t("Email verified. Signed in successfully."));
+src/pages/LoginPage.jsx:      toast.success(t("Signed in with Google."));
+src/pages/MSGroupsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/MSGroupsPage.jsx:      toast.error("Group Name is required");
+src/pages/MSGroupsPage.jsx:        toast.success("Group updated successfully");
+src/pages/MSGroupsPage.jsx:        toast.success("Group created successfully");
+src/pages/MSGroupsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/MSGroupsPage.jsx:      toast.success("Group deleted successfully");
+src/pages/MSGroupsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.error(t("Failed to load booking ledger data"));
+src/pages/BookingsPage.jsx:      toast.error(t("Failed to compile availability calendar"));
+src/pages/BookingsPage.jsx:      toast.success(t("Booking item configured successfully!"));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Booking request submitted! Awaiting administrator approval."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Payment proof submitted successfully! Verification pending."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Slot reserved internally. Member view blocked."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Maintenance dates added successfully."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(`Booking request decided: ${decision}`);
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(`Payment verified status: ${decision}`);
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Guest checked in successfully!"));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Check-out complete! Final stay receipt generated."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Room transferred successfully."));
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(`Stay extended by ${extendDays} day(s). Booking dates updated.`);
+src/pages/BookingsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/BookingsPage.jsx:      toast.success(t("Booking registry exported."));
+src/pages/BookingsPage.jsx:      toast.error(t("Export failed"));
+src/pages/EventsPage.jsx:      toast.error(t("Failed to load events ledger data"));
+src/pages/EventsPage.jsx:      toast.success(`Checked in: ${data?.data?.publicId || "ticket"}`);
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/EventsPage.jsx:      toast.success(t("RSVP Checked In successfully!"));
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/EventsPage.jsx:      toast.success(t("Section added."));
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/EventsPage.jsx:      toast.success(t("Row added."));
+src/pages/EventsPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/EventsPage.jsx:      toast.success(`${count} seats added.`);
+src/pages/EventsPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/EventsPage.jsx:      toast.success(isLocked ? "Seat released" : "Seat locked");
+src/pages/EventsPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/EventsPage.jsx:      toast.success(t("Support Ticket raised successfully! Our team will contact you."));
+src/pages/EventsPage.jsx:      toast.success(t("Support Ticket request registered. JiNANAM team notified!"));
+src/pages/EventsPage.jsx:      toast.error(t("Please fill in all mandatory event timeline fields."));
+src/pages/EventsPage.jsx:      toast.error(t("Paid Events can only be created by JiNANAM. Please raise a support ticket."));
+src/pages/EventsPage.jsx:        toast.success(t(submitAction === "PUBLISH" ? "Event updated and published!" : "Event updated successfully!"));
+src/pages/EventsPage.jsx:        toast.success(t(submitAction === "PUBLISH" ? "Event created successfully! Target audience visibility rules published." : "Event draft saved!"));
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/EventsPage.jsx:      toast.success(t("Event published successfully!"));
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/EventsPage.jsx:        toast.success(`Gallery image added to album "${albumName}".`);
+src/pages/EventsPage.jsx:        toast.success(`Video link added to album "${albumName}".`);
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/EventsPage.jsx:      toast.success(t("QR Token validated! Attendee marked Checked-In."));
+src/pages/EventsPage.jsx:      toast.error(extractErrorMessage(err) || "Invalid QR Validation Token");
+src/pages/EventsPage.jsx:      toast.success(t("RSVP report downloaded."));
+src/pages/EventsPage.jsx:      toast.error(t("Export failed"));
+src/pages/EventsPage.jsx:        toast.success(`Exported ${reportType} report as ${format.toUpperCase()}.`);
+src/pages/EventsPage.jsx:      toast.success(`Downloaded ${reportType} report.`);
+src/pages/EventsPage.jsx:      toast.success(`Exported ${reportType} report as ${format.toUpperCase()}.`);
+src/pages/EventsPage.jsx:                  toast.error(t("Please select a specific organization from the Active Location Facility to create an event."));
+src/pages/LoginHistoryPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/SeatingPage.jsx:      toast.success(t("Section added."));
+src/pages/SeatingPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/SeatingPage.jsx:      toast.success(t("Row added."));
+src/pages/SeatingPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/SeatingPage.jsx:      toast.success(`${count} seats added.`);
+src/pages/SeatingPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/SeatingPage.jsx:      toast.success(isLocked ? "Seat released" : "Seat locked");
+src/pages/SeatingPage.jsx:    } catch (err) { toast.error(extractErrorMessage(err)); }
+src/pages/MemberReportsPage.jsx:      toast.error(t("Failed to load member enrollment report."));
+src/pages/ToursPage.jsx:      toast.error(t("Failed to load yatra tours ledger"));
+src/pages/ToursPage.jsx:      toast.error(t("Failed to sync tour subdetails"));
+src/pages/ToursPage.jsx:      toast.success(t("New 99/108 Yatra Tour published successfully!"));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Sponsor onboarded for the tour."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Participant enrolled in yatra group."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Medical profile updated successfully."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Accommodation building location configured."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Room assigned successfully!"));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Bulk progress and attendance checks saved!"));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Yatra announcement broadcasted to members and parents."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Daily itinerary schedule published."));
+src/pages/ToursPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ToursPage.jsx:      toast.success(t("Report downloaded."));
+src/pages/ToursPage.jsx:      toast.error(t("Export failed"));
+src/pages/StanaksPage.jsx:    if (!form.name.trim()) { toast.error(t("Sthanak name is required.")); return; }
+src/pages/StanaksPage.jsx:    if (!form.community) { toast.error(t("Community is required.")); return; }
+src/pages/StanaksPage.jsx:    if (!form.subSect) { toast.error(t("Sub-Sect is required.")); return; }
+src/pages/StanaksPage.jsx:        toast.success(t("Sthanak updated successfully."));
+src/pages/StanaksPage.jsx:        toast.success(t("Sthanak created successfully."));
+src/pages/StanaksPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/StanaksPage.jsx:      toast.success(t("Sthanak deleted."));
+src/pages/StanaksPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/FeedbackPage.jsx:      toast.error(t("Failed to load feedback."));
+src/pages/FeedbackPage.jsx:      toast.success(`Feedback marked as ${status.toLowerCase()}.`);
+src/pages/FeedbackPage.jsx:      toast.error(t("Failed to update feedback status."));
+src/pages/AccountStatusPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/AccountStatusPage.jsx:      toast.success(`Account ${isLockedNow ? "locked" : "unlocked"} successfully.`);
+src/pages/AccountStatusPage.jsx:      toast.error(extractErrorMessage(e));
+src/pages/FamilyPage.jsx:    if (!form.relationshipTypeId) { toast.error(t("Please select a relationship.")); return; }
+src/pages/FamilyPage.jsx:    if (mode === "link" && !linkedMember) { toast.error(t("Please select a member to link.")); return; }
+src/pages/FamilyPage.jsx:      toast.error(t("A member cannot be linked to themselves."));
+src/pages/FamilyPage.jsx:        toast.success(t("Members linked into one family."));
+src/pages/FamilyPage.jsx:        toast.success(t("Family member added."));
+src/pages/FamilyPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/FamilyPage.jsx:      toast.error(t("Pick at least 2 members to form a family group."));
+src/pages/FamilyPage.jsx:      toast.error(t("Choose one member as the anchor of the family."));
+src/pages/FamilyPage.jsx:      toast.error(t(`Pick a relationship for ${nameOf(missingRel)} → ${nameOf(anchorId)}.`));
+src/pages/FamilyPage.jsx:        toast.success(`Family group ${label} ready with ${memberIds.length} members${suffix}.`);
+src/pages/FamilyPage.jsx:        toast.error(
+src/pages/FamilyPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/FamilyPage.jsx:    if (!isSuperAdmin) { toast.error(t("Only Super Admin can remove family links.")); return; }
+src/pages/FamilyPage.jsx:      toast.success(t("Family link removed."));
+src/pages/FamilyPage.jsx:      toast.error(extractErrorMessage(err));
+src/pages/ModuleControllerPage.jsx:      toast.error(t("Failed to load organizations"));
+src/pages/ModuleControllerPage.jsx:      toast.success(t("Modules updated successfully"));
+src/pages/ModuleControllerPage.jsx:      toast.error(extractErrorMessage(err) || t("Failed to update modules"));
+src/pages/ReportsPage.jsx:      if (list.length === 0) toast.info(t("reports.noRows", "No rows for this range."));
+src/pages/ReportsPage.jsx:    } catch (e) { toast.error(extractErrorMessage(e)); }
+src/pages/ReportsPage.jsx:      toast.error(extractErrorMessage(e));

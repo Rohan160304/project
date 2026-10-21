@@ -1,0 +1,255 @@
+import { Request, Response } from 'express';
+import { asyncHandler } from '@/utils/asyncHandler';
+import { ok, created } from '@/utils/apiResponse';
+import { ApiError } from '@/utils/ApiError';
+import * as bookingsService from './bookings.service';
+import { prisma } from '@/config/prisma';
+import { recordAudit, auditContextFromRequest } from '@/engines/audit/audit.service';
+
+async function requireMember(userId: string) {
+  const member = await prisma.member.findUnique({ where: { userId } });
+  if (!member) throw ApiError.notFound('Member profile not found');
+  return member;
+}
+
+export const createBookingItem = asyncHandler(async (req: Request, res: Response) => {
+  const item = await bookingsService.createBookingItem({ ...req.body, createdById: req.actor!.userId });
+  return created(res, item);
+});
+
+export const listBookingItems = asyncHandler(async (req: Request, res: Response) => {
+  const items = await bookingsService.listBookingItems(req.params.organizationId as string);
+  return ok(res, items);
+});
+
+export const listPublicBookingItems = asyncHandler(async (req: Request, res: Response) => {
+  const items = await bookingsService.listPublicBookingItems(req.params.organizationId as string);
+  return ok(res, items);
+});
+
+export const updateBookingItem = asyncHandler(async (req: Request, res: Response) => {
+  const item = await bookingsService.updateBookingItem(req.params.itemId as string, req.body, req.actor!.userId);
+  return ok(res, item);
+});
+
+export const addBlackoutDate = asyncHandler(async (req: Request, res: Response) => {
+  const row = await bookingsService.addBlackoutDate(req.params.itemId as string, req.body.date, req.body.reason);
+  return created(res, row);
+});
+
+export const addInternalReservation = asyncHandler(async (req: Request, res: Response) => {
+  const row = await bookingsService.addInternalReservation(req.params.itemId as string, req.body, req.actor!.userId);
+  return created(res, row);
+});
+
+export const removeInternalReservation = asyncHandler(async (req: Request, res: Response) => {
+  await bookingsService.removeInternalReservation(req.params.reservationId as string);
+  return ok(res, { removed: true });
+});
+
+export const availabilityCalendar = asyncHandler(async (req: Request, res: Response) => {
+  const { from, to } = req.query as unknown as { from: Date; to: Date };
+  const isAdmin = req.actor!.isSuperAdmin || (req.actor!.permissions.BOOKINGS ?? []).includes('APPROVE');
+  const calendar = await bookingsService.getAvailabilityCalendar(req.params.itemId as string, from, to, { isAdmin });
+  return ok(res, calendar);
+});
+
+export const submitBooking = asyncHandler(async (req: Request, res: Response) => {
+  const member = await requireMember(req.actor!.userId);
+  const booking = await bookingsService.submitBooking(member.id, req.body);
+  return created(res, booking);
+});
+
+export const decideBooking = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.decideBooking(req.params.bookingId as string, req.body.decision, req.actor!.userId, req.body.reason, req.body.allocatedRoomId);
+  await recordAudit({
+    ...auditContextFromRequest(req),
+    organizationId: booking.organizationId,
+    module: 'BOOKINGS',
+    action: `BOOKING_${req.body.decision}`,
+    entityType: 'Booking',
+    entityId: booking.id,
+    after: { status: booking.status },
+    isCritical: true,
+  });
+  return ok(res, booking);
+});
+
+export const submitPaymentProof = asyncHandler(async (req: Request, res: Response) => {
+  const member = await requireMember(req.actor!.userId);
+  const booking = await bookingsService.submitPaymentProof(req.params.bookingId as string, member.id, req.body);
+  return ok(res, booking);
+});
+
+export const verifyPayment = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.verifyPayment(req.params.bookingId as string, req.body.decision, req.actor!.userId, req.body.reason);
+  await recordAudit({
+    ...auditContextFromRequest(req),
+    organizationId: booking.organizationId,
+    module: 'BOOKINGS',
+    action: `PAYMENT_${req.body.decision}`,
+    entityType: 'Booking',
+    entityId: booking.id,
+    after: { status: booking.status },
+    isCritical: true,
+  });
+  return ok(res, booking);
+});
+
+export const myBookings = asyncHandler(async (req: Request, res: Response) => {
+  const member = await requireMember(req.actor!.userId);
+  const query = req.query as unknown as Parameters<typeof bookingsService.listMyBookings>[1];
+  const { total, rows } = await bookingsService.listMyBookings(member.id, query);
+  return ok(res, rows, { total, page: query.page, pageSize: query.pageSize });
+});
+
+export const getBooking = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.getBookingWithTimeline(req.params.bookingId as string);
+  const isOwner = booking.member.userId === req.actor!.userId;
+  const isOrgAdmin = req.actor!.isSuperAdmin || req.actor!.organizationIds.includes(booking.organizationId);
+  if (!isOwner && !isOrgAdmin) throw ApiError.tenantScope();
+  return ok(res, booking);
+});
+
+/** Platform-wide booking list — Super Admin only; org admins use /bookings/org/:id. */
+export const listAllBookings = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.actor!.isSuperAdmin) throw ApiError.forbidden('Platform-wide booking list is Super Admin only');
+  const { status } = req.query as { status?: string };
+  const rows = await prisma.booking.findMany({
+    where: { deletedAt: null, ...(status && status !== 'ALL' ? { status: status as any } : {}) },
+    include: {
+      bookingItem: { select: { name: true, type: true } },
+      organization: { select: { name: true, publicId: true } },
+      member: { select: { fullName: true, publicId: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 200,
+  });
+  return ok(res, rows);
+});
+
+export const orgBookings = asyncHandler(async (req: Request, res: Response) => {
+  const { status, page = 1, pageSize = 20 } = req.query as any;
+  const { total, rows } = await bookingsService.listOrgBookings(req.params.organizationId as string, { status, page: Number(page), pageSize: Number(pageSize) });
+  return ok(res, rows, { total });
+});
+
+export const orgBookingsExport = asyncHandler(async (req: Request, res: Response) => {
+  const { status } = req.query as any;
+  const { rows } = await bookingsService.listOrgBookings(req.params.organizationId as string, { status, page: 1, pageSize: 5000 });
+  const { sendListExport, parseExportFormat } = await import('@/utils/listExport');
+  return sendListExport(
+    res,
+    parseExportFormat(req.query.format),
+    'Organization Bookings',
+    rows.map((r) => ({
+      bookingId: r.publicId,
+      item: r.bookingItem.name,
+      member: `${r.member.fullName} (${r.member.publicId})`,
+      dateFrom: r.dateFrom.toISOString().slice(0, 10),
+      status: r.status,
+      amount: r.amount.toString(),
+    })),
+    [
+      { key: 'bookingId', header: 'Booking ID' },
+      { key: 'item', header: 'Item' },
+      { key: 'member', header: 'Member' },
+      { key: 'dateFrom', header: 'Date' },
+      { key: 'status', header: 'Status' },
+      { key: 'amount', header: 'Amount' },
+    ],
+  );
+});
+
+// Booking calendar — return bookings grouped by day for a month
+export const bookingCalendar = asyncHandler(async (req: Request, res: Response) => {
+  const { month, year, organizationId } = req.query as Record<string, string>;
+
+  const m = parseInt(month ?? String(new Date().getMonth() + 1));
+  const y = parseInt(year ?? String(new Date().getFullYear()));
+
+  const from = new Date(y, m - 1, 1);
+  const to = new Date(y, m, 0, 23, 59, 59); // last day of month
+
+  const orgId = req.actor!.isSuperAdmin
+    ? (organizationId as string | undefined)
+    : req.actor!.organizationIds[0] ?? undefined;
+
+
+  const bookings = await prisma.booking.findMany({
+    where: {
+      organizationId: orgId,
+      dateFrom: { gte: from, lte: to },
+      status: { in: ['SUBMITTED', 'APPROVED', 'PAYMENT_PENDING', 'PAYMENT_VERIFICATION', 'CONFIRMED'] },
+
+    },
+    include: {
+      bookingItem: { select: { name: true, type: true } },
+      member: { select: { fullName: true, publicId: true } },
+    },
+    orderBy: { dateFrom: 'asc' },
+    take: 1000,
+  });
+
+  // Group by day of month
+  const byDay: Record<number, typeof bookings> = {};
+  for (const b of bookings) {
+    const day = b.dateFrom.getDate();
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(b);
+  }
+
+  return ok(res, {
+    month: m,
+    year: y,
+    totalBookings: bookings.length,
+    byDay,
+    bookings: bookings.map((b) => ({
+      id: b.id,
+      publicId: b.publicId,
+      date: b.dateFrom.getDate(),
+      dateFrom: b.dateFrom.toISOString(),
+      dateTo: b.dateTo?.toISOString(),
+      type: b.bookingItem.type,
+      name: b.member.fullName,
+      publicIdMember: b.member.publicId,
+      item: b.bookingItem.name,
+      status: b.status,
+    })),
+  });
+});
+
+export const checkInBooking = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.checkInBooking(req.params.bookingId as string, req.body, req.actor!.userId);
+  return ok(res, booking);
+});
+
+export const checkOutBooking = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.checkOutBooking(req.params.bookingId as string, req.body, req.actor!.userId);
+  return ok(res, booking);
+});
+
+export const transferRoom = asyncHandler(async (req: Request, res: Response) => {
+  const row = await bookingsService.transferRoom(req.params.bookingId as string, req.body.newRoomId, req.body.reason, req.actor!.userId);
+  return ok(res, row);
+});
+
+export const listOrgRooms = asyncHandler(async (req: Request, res: Response) => {
+  const rooms = await bookingsService.listOrgRooms(req.params.organizationId as string, req.query.category as string, req.query.status as any);
+  return ok(res, rooms);
+});
+
+export const updateRoomStatus = asyncHandler(async (req: Request, res: Response) => {
+  const room = await bookingsService.updateRoomStatus(req.params.organizationId as string, req.params.roomId as string, req.body.status as any);
+  return ok(res, room);
+});
+
+export const extendStay = asyncHandler(async (req: Request, res: Response) => {
+  const booking = await bookingsService.extendStay(req.params.bookingId as string, Number(req.body.additionalDays), req.actor!.userId);
+  return ok(res, booking);
+});
+
+export const updateHousekeepingStatus = asyncHandler(async (req: Request, res: Response) => {
+  const room = await bookingsService.updateHousekeepingStatus(req.params.roomId as string, req.body.status);
+  return ok(res, room);
+});
