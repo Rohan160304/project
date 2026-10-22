@@ -679,7 +679,7 @@ async function main() {
   await seedRolesAndPermissions();
   await seedMasterData();
   await seedSuperAdmin();
-  // await seedDemoData(); // Disabled to allow manual realistic data seeding
+   await seedDemoData();
 }
 
 main()
