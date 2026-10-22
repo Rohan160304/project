@@ -1,4 +1,4 @@
-﻿ALTER TABLE "organizations"
+ALTER TABLE "organizations"
 ADD COLUMN IF NOT EXISTS "communityPageId" TEXT;
 
 DO $$

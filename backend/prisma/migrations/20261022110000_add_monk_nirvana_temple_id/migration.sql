@@ -1,4 +1,4 @@
-﻿ALTER TABLE "monk_profiles"
+ALTER TABLE "monk_profiles"
 ADD COLUMN IF NOT EXISTS "nirvanaTempleId" TEXT;
 
 DO $$
